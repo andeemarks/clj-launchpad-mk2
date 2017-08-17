@@ -9,10 +9,10 @@
       [lein-cljfmt "0.5.6"]]
   :profiles 
   	{:dev 
-  		{:dependencies 
+  		{	:plugins [[lein-midje "3.2.1"]]
+  			:dependencies 
   			[
           [com.jakemccrary/lein-test-refresh "0.20.0"]
-          [lein-midje "3.2.1"]
           [clansi "1.0.0"]
           [com.taoensso/timbre "4.10.0"]
   				[midje "1.8.3" :exclusions [org.clojure/clojure]]]}})  
