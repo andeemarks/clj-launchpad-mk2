@@ -1,6 +1,6 @@
-# clj-launchpad [![Clojars Project](http://clojars.org/clj-launchpad/latest-version.svg)](http://clojars.org/clj-launchpad)
-
 # clj-launchpad-mk2
+
+[<img src="https://travis-ci.org/andeemarks/clj-launchpad-mk2.png?branch=master" alt="Build Status" />](https://travis-ci.org/andeemarks/clj-launchpad-mk2)
 
 This gem provides a Clojure interface to access the [Novation Launchpad MK2](https://global.novationmusic.com/launch/launchpad#) programmatically. The code started life as a clone of [Moumar's gem](https://github.com/moumar/clj-launchpad) and was subsequently updated to handle the MK2 version of the Launchpad.  The mapping of buttons and specification of colours completely changed when the MK2 was released, so lots of the original code in these areas has been re-written, but the interaction code is still largely intact.
 
