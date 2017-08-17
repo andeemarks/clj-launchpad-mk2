@@ -20,20 +20,17 @@
   (draw-grid lpad 1 2 :off)
   "
   [lpad x y & color-description]
-  (let [color-description (set color-description)
-        color-intensity   ( (or (some #{:off :low :medium :high} color-description) :high) intensities)
-        color             (some #{:red :green :orange} color-description)
-        velocity          (+
-                           (if (:flashing color-description) 8 12)
-                           (case color
-                             :red    color-intensity
-                             :green  (* 16 color-intensity)
-                             :orange (+ color-intensity (* 16 color-intensity ))
-                             0))
+  (let [velocity          (first color-description)
         midi-message      (if (= 8 y) 0xB0 0x90)
         midi-position     (if (= 8 y)
                             (+ x 0x68)
-                            (+ x (* 16 y)))   ]
+                            (+ (+ x 1) (* 10 (+ y 1))))   ]
+    (if (or (> x 7) (< x 0))
+      (throw (javax.sound.midi.InvalidMidiDataException. "x must be in range 0-7 inclusive")))
+
+    (if (or (> y 7) (< y 0))
+      (throw (javax.sound.midi.InvalidMidiDataException. "y must be in range 0-7 inclusive")))
+
     #_(println
        "x" x
        "y" y
