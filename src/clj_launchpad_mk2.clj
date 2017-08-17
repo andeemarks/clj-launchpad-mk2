@@ -1,13 +1,9 @@
 (ns clj-launchpad-mk2
+  (:require [midi.core :as midi])
   (:import [javax.sound.midi MidiSystem Receiver ShortMessage]))
 
 (def #^{:private true} intensities
   { :off 0 :low 1 :medium 2 :high 3 })
-
-(defn- send-midi [{:keys [out]} & args]
-  (.send out
-         (doto (ShortMessage.) (.setMessage (nth args 0) (nth args 1) (nth args 2)))
-         -1))
 
 (defn draw-grid
   "set a cell grid on or off.
@@ -42,13 +38,13 @@
        "x" x
        "y" y
        "velocity:" velocity)
-    (send-midi lpad midi-message midi-position velocity)))
+    (midi/send-midi lpad midi-message midi-position velocity)))
 
 (defn reset
   "reset the launchpad (all lights off)"
   [lpad]
-  (send-midi lpad 0xB0 0 0)
-  (send-midi lpad 0xB0 0 0x28) ; activate flashing
+  (midi/send-midi lpad 0xB0 0 0)
+  (midi/send-midi lpad 0xB0 0 0x28) ; activate flashing
   )
 
 (defn clear-grid [lpad]
@@ -60,7 +56,7 @@
   "lights all the leds in one command. Intensity can be :low, :medium or :high"
   ([lpad] (test-leds lpad :high))
   ([lpad intensity]
-   (send-midi lpad 0xb0 0 (+ (intensity intensities) 0x7c))))
+   (midi/send-midi lpad 0xb0 0 (+ (intensity intensities) 0x7c))))
 
 (defn midi-device-names []
   "returns names of available Midi devices, usable with the open function"
@@ -68,8 +64,8 @@
 
 (defn open
   ([]
-   "find the launchpad name \"Launchpad\" in the available midi devices and return a launchpad object suitable for the calls of this library"
-   (open "Launchpad"))
+   "find the launchpad name \"MK2 [hw:2,0,0]\" in the available midi devices and return a launchpad object suitable for the calls of this library"
+   (open "MK2 [hw:2,0,0]"))
   ([name]
    "find the launchpad by name in the available midi devices and return a launchpad object suitable for the calls of this library"
    (let [[in-device out-device]
