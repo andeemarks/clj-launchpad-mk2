@@ -59,7 +59,12 @@
   (validate-color color-description)
   (midi/send-midi-sysex lpad 12 x color-description))
 
-(defn dark-cell
+(defn light-grid
+  [lpad color-description]
+  (validate-color color-description)
+  (midi/send-midi-sysex lpad 14 color-description))
+
+(defn clear-cell
   [lpad x y]
   (validate-coordinates x y)
   (midi/send-midi lpad CHANNEL_1_NOTE_ON (coordinate-pair-to-index x y) 0))
@@ -81,16 +86,9 @@
   (validate-coordinates x y)
   (midi/send-midi lpad CHANNEL_3_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
 
-
-(defn reset
-  "reset all pads (all lights off)"
-  [lpad]
-  (midi/send-midi-sysex lpad 14 0))
-
 (defn clear-grid [lpad]
   "clear the launchpad grid (not the top and right buttons)"
-  (dorun (for [x (range 8)
-               y (range 8)] (dark-cell lpad x y))))
+  (midi/send-midi-sysex lpad 14 0))
 
 (defn midi-device-names []
   "returns names of available Midi devices, usable with the open function"

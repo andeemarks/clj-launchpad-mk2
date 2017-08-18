@@ -32,10 +32,6 @@
 			(pulse lpad 0 0 -1) => (throws javax.sound.midi.InvalidMidiDataException)
 			(pulse lpad 0 0 128) => (throws javax.sound.midi.InvalidMidiDataException)))
 
-	(facts "about #reset"
-		(reset lpad) => nil
-		(provided (midi/send-midi-sysex lpad 14 0) => nil))
-
 	(facts "about #light-row"
 		(fact "a sysex message with the appropriate status byte is sent"
 			(light-row lpad 3 65) => nil
@@ -58,6 +54,14 @@
 			(light-row lpad 5 -1) => (throws javax.sound.midi.InvalidMidiDataException)
 			(light-row lpad 5 128) => (throws javax.sound.midi.InvalidMidiDataException) ))
 
+	(facts "about #light-grid"
+		(fact "a sysex message with the appropriate status byte is sent"
+			(light-grid lpad 65) => nil
+			(provided (midi/send-midi-sysex lpad 14 65) => nil))
+		(fact "color must be within the range 0-127 inclusive"
+			(light-grid lpad -1) => (throws javax.sound.midi.InvalidMidiDataException)
+			(light-grid lpad 128) => (throws javax.sound.midi.InvalidMidiDataException) ))
+
 	(future-facts "about #scroll-text-once"
 		(scroll-text-once lpad "Hello world" 70) => nil
 		(provided (midi/send-midi-sysex lpad 20 70 0 anything) => nil))
@@ -78,23 +82,23 @@
 			(light-cell lpad 0 0 -1) => (throws javax.sound.midi.InvalidMidiDataException)
 			(light-cell lpad 0 0 128) => (throws javax.sound.midi.InvalidMidiDataException)))
 
-	(facts "about #dark-cell"
+	(facts "about #clear-cell"
 		(fact "valid x/y coordinates and color are mapped onto the MIDI message when being dispatched to midi/send-midi"
-			(dark-cell lpad 2 3) => nil
+			(clear-cell lpad 2 3) => nil
 			(provided (midi/send-midi lpad CHANNEL_1_NOTE_ON 43 0) => nil)
-			(dark-cell lpad 0 0) => nil
+			(clear-cell lpad 0 0) => nil
 			(provided (midi/send-midi lpad CHANNEL_1_NOTE_ON 11 0) => nil) )
 		(fact "x coordinate must be within the range 0-7 inclusive"
-			(dark-cell lpad -1 0) => (throws javax.sound.midi.InvalidMidiDataException)
-			(dark-cell lpad 8 0) => (throws javax.sound.midi.InvalidMidiDataException))
+			(clear-cell lpad -1 0) => (throws javax.sound.midi.InvalidMidiDataException)
+			(clear-cell lpad 8 0) => (throws javax.sound.midi.InvalidMidiDataException))
 		(fact "y coordinate must be within the range 0-7 inclusive"
-			(dark-cell lpad 0 -1) => (throws javax.sound.midi.InvalidMidiDataException)
-			(dark-cell lpad 0 8) => (throws javax.sound.midi.InvalidMidiDataException)))
+			(clear-cell lpad 0 -1) => (throws javax.sound.midi.InvalidMidiDataException)
+			(clear-cell lpad 0 8) => (throws javax.sound.midi.InvalidMidiDataException)))
 
 	(facts "about #clear-grid"
 		(fact "midi/send-midi is called once for each grid cell"
 			(clear-grid lpad) => nil
-			(provided (midi/send-midi lpad CHANNEL_1_NOTE_ON (as-checker #(<= 11 % 88)) 0) => nil :times 64)))
+			(provided (midi/send-midi-sysex lpad 14 0) => nil)))
 
 	(facts "about #light-cc"
 		(fact "valid x/y coordinates and color are mapped onto the MIDI message when being dispatched to midi/send-midi"
