@@ -32,9 +32,17 @@
 			(pulse lpad 0 0 -1) => (throws javax.sound.midi.InvalidMidiDataException)
 			(pulse lpad 0 0 128) => (throws javax.sound.midi.InvalidMidiDataException)))
 
-	(future-facts "about #reset"
+	(facts "about #reset"
 		(reset lpad) => nil
 		(provided (midi/send-midi-sysex lpad 14 0) => nil))
+
+	(facts "about #light-row"
+		(light-row lpad 3 65) => nil
+		(provided (midi/send-midi-sysex lpad 13 3 65) => nil))
+
+	(future-facts "about #scroll-text-once"
+		(scroll-text-once lpad "Hello world" 70) => nil
+		(provided (midi/send-midi-sysex lpad 20 70 0 anything) => nil))
 
 	(facts "about #light-cell"
 		(fact "valid x/y coordinates and color are mapped onto the MIDI message when being dispatched to midi/send-midi"

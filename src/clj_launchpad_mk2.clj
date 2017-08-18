@@ -40,6 +40,14 @@
   (validate-coordinates x y)
   (midi/send-midi lpad CHANNEL_1_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
 
+(defn scroll-text-once
+  [lpad text color-description]
+  (midi/send-midi-sysex lpad 20 color-description 0))
+
+(defn light-row
+  [lpad y color-description]
+  (midi/send-midi-sysex lpad 13 y color-description))
+
 (defn dark-cell
   [lpad x y]
   (validate-coordinates x y)
@@ -61,6 +69,7 @@
   [lpad x y & color-description]
   (validate-coordinates x y)
   (midi/send-midi lpad CHANNEL_3_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
+
 
 (defn reset
   "reset all pads (all lights off)"
