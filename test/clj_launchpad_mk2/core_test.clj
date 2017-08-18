@@ -1,4 +1,4 @@
-(ns clj-launchpad-mk2.test.core
+(ns clj-launchpad-mk2.core-test
   (:use midje.sweet) 
   (:require [midi.core :as midi])
   (:require [clj-launchpad-mk2 :refer :all]))
