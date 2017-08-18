@@ -114,7 +114,7 @@
        (.open out-device)
        (.open in-device)
        (Thread/sleep 100)
-       (reset lpad))
+       (clear-grid lpad))
      lpad)))
 
 (defn on-grid-pressed
