@@ -37,8 +37,15 @@
 		(provided (midi/send-midi-sysex lpad 14 0) => nil))
 
 	(facts "about #light-row"
-		(light-row lpad 3 65) => nil
-		(provided (midi/send-midi-sysex lpad 13 3 65) => nil))
+		(fact "a sysex message with the appropriate status byte is sent"
+			(light-row lpad 3 65) => nil
+			(provided (midi/send-midi-sysex lpad 13 3 65) => nil))
+		(fact "y coordinate must be within the range 0-7 inclusive"
+			(light-row lpad -1 65) => (throws javax.sound.midi.InvalidMidiDataException)
+			(light-row lpad 8 65) => (throws javax.sound.midi.InvalidMidiDataException))
+		(fact "color must be within the range 0-127 inclusive"
+			(light-row lpad 5 -1) => (throws javax.sound.midi.InvalidMidiDataException)
+			(light-row lpad 5 128) => (throws javax.sound.midi.InvalidMidiDataException) ))
 
 	(future-facts "about #scroll-text-once"
 		(scroll-text-once lpad "Hello world" 70) => nil

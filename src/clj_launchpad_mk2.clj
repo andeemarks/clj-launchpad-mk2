@@ -9,6 +9,9 @@
   (if (or (> y 7) (< y 0))
     (throw (javax.sound.midi.InvalidMidiDataException. "y must be in range 0-7 inclusive"))))
 
+(defn- validate-color [color]
+  (if (or (> color 127) (< color 0))
+    (throw (javax.sound.midi.InvalidMidiDataException. "color must be in range 0-127 inclusive"))))
 
 (def ^:const CHANNEL_1_NOTE_ON 0x90)
 (def ^:const CHANNEL_2_NOTE_ON 0x91)
@@ -46,6 +49,8 @@
 
 (defn light-row
   [lpad y color-description]
+  (validate-coordinates 0 y)
+  (validate-color color-description)
   (midi/send-midi-sysex lpad 13 y color-description))
 
 (defn dark-cell
