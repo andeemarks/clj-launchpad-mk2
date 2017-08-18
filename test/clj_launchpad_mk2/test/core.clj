@@ -5,10 +5,6 @@
 
 (def lpad (atom (open)))
 
-(def ^:const CHANNEL_1_NOTE_ON 144)
-(def ^:const CHANNEL_2_NOTE_ON 145)
-(def ^:const CHANNEL_3_NOTE_ON 146)
-
 (with-state-changes [(after :contents (close @lpad))]
 	(facts "about #flash"
 		(flash lpad 5 5 60) => nil

@@ -12,6 +12,11 @@
   (if (or (> y 7) (< y 0))
     (throw (javax.sound.midi.InvalidMidiDataException. "y must be in range 0-7 inclusive"))))
 
+
+(def ^:const CHANNEL_1_NOTE_ON 0x90)
+(def ^:const CHANNEL_2_NOTE_ON 0x91)
+(def ^:const CHANNEL_3_NOTE_ON 0x92)
+
 (defn draw-grid
   "set a cell grid on or off.
   x can be 0 to 8 inclusive (8 is for the top buttons)
@@ -27,43 +32,29 @@
   (draw-grid lpad 1 2 :off)
   "
   [lpad x y & color-description]
-  (let [velocity          (first color-description)
-        midi-message      (if (= 8 y) 0xB0 0x90)
+  (let [midi-message      (if (= 8 y) 0xB0 CHANNEL_1_NOTE_ON)
         midi-position     (if (= 8 y)
                             (+ x 0x68)
                             (+ (+ x 1) (* 10 (+ y 1))))   ]
     (validate-coordinates x y)
-
-    #_(println
-       "x" x
-       "y" y
-       "velocity:" velocity)
-    (midi/send-midi lpad midi-message midi-position velocity)))
+    (midi/send-midi lpad midi-message midi-position (first color-description))))
 
 (defn flash
   "flash the specified pad between the current color and specified color"
   [lpad x y & color-description]
-  (let [velocity          (first color-description)
-        midi-message      0x91
-        midi-position     (+ (+ x 1) (* 10 (+ y 1)))   ]
-        
+  (let [midi-position     (+ (+ x 1) (* 10 (+ y 1)))]
     (validate-coordinates x y)
-
-    (midi/send-midi lpad midi-message midi-position velocity)))
+    (midi/send-midi lpad CHANNEL_2_NOTE_ON midi-position (first color-description))))
 
 (defn pulse
   "pulse the specified pad with the specified color"
   [lpad x y & color-description]
-  (let [velocity          (first color-description)
-        midi-message      0x92
-        midi-position     (+ (+ x 1) (* 10 (+ y 1)))   ]
-
+  (let [midi-position     (+ (+ x 1) (* 10 (+ y 1)))   ]
     (validate-coordinates x y)
-
-    (midi/send-midi lpad midi-message midi-position velocity)))
+    (midi/send-midi lpad CHANNEL_3_NOTE_ON midi-position (first color-description))))
 
 (defn reset
-  "reset the launchpad (all lights off)"
+  "reset all pads (all lights off)"
   [lpad]
   (midi/send-midi-sysex lpad 14 0))
 
