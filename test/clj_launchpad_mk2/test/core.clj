@@ -6,8 +6,26 @@
 (def lpad (atom (open)))
 
 (def ^:const CHANNEL_1_NOTE_ON 144)
+(def ^:const CHANNEL_2_NOTE_ON 145)
 
 (with-state-changes [(after :contents (close @lpad))]
+	(facts "about #flash"
+		(flash lpad 5 5 60) => nil
+		(provided (midi/send-midi lpad CHANNEL_2_NOTE_ON 66 60) => nil)
+		(fact "x coordinate must be within the range 0-7 inclusive"
+			(flash lpad -1 0 127) => (throws javax.sound.midi.InvalidMidiDataException)
+			(flash lpad 8 0 127) => (throws javax.sound.midi.InvalidMidiDataException))
+		(fact "y coordinate must be within the range 0-7 inclusive"
+			(flash lpad 0 -1 127) => (throws javax.sound.midi.InvalidMidiDataException)
+			(flash lpad 0 8 127) => (throws javax.sound.midi.InvalidMidiDataException))
+		(fact "color must be within the range 0-127 inclusive"
+			(flash lpad 0 0 -1) => (throws javax.sound.midi.InvalidMidiDataException)
+			(flash lpad 0 0 128) => (throws javax.sound.midi.InvalidMidiDataException)))
+
+	(future-facts "about #reset"
+		(reset lpad) => nil
+		(provided (midi/send-midi-sysex lpad 14 0) => nil))
+	
 	(facts "about #draw-grid"
 		(fact "valid x/y coordinates and color are mapped onto the MIDI message when being dispatched to midi/send-midi"
 			(draw-grid lpad 2 3 127) => nil

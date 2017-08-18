@@ -37,12 +37,25 @@
        "velocity:" velocity)
     (midi/send-midi lpad midi-message midi-position velocity)))
 
+(defn flash
+  "flash the specified pad between the current color and specified color"
+  [lpad x y & color-description]
+  (let [velocity          (first color-description)
+        midi-message      0x91
+        midi-position     (+ (+ x 1) (* 10 (+ y 1)))   ]
+        
+    (if (or (> x 7) (< x 0))
+      (throw (javax.sound.midi.InvalidMidiDataException. "x must be in range 0-7 inclusive")))
+
+    (if (or (> y 7) (< y 0))
+      (throw (javax.sound.midi.InvalidMidiDataException. "y must be in range 0-7 inclusive")))
+
+    (midi/send-midi lpad midi-message midi-position velocity)))
+
 (defn reset
   "reset the launchpad (all lights off)"
   [lpad]
-  (midi/send-midi lpad 0xB0 0 0)
-  (midi/send-midi lpad 0xB0 0 0x28) ; activate flashing
-  )
+  (midi/send-midi-sysex lpad 14 0))
 
 (defn clear-grid [lpad]
   "clear the launchpad grid (not the top and left buttons)"
