@@ -16,10 +16,20 @@
 (def ^:const CHANNEL_1_NOTE_ON 0x90)
 (def ^:const CHANNEL_2_NOTE_ON 0x91)
 (def ^:const CHANNEL_3_NOTE_ON 0x92)
+(def ^:const CC_NOTE_ON 0xB0)
+
+(def ^:const CC_CURSOR_UP 0x68)
+(def ^:const CC_CURSOR_DOWN 0x69)
+(def ^:const CC_CURSOR_LEFT 0x6A)
+(def ^:const CC_CURSOR_RIGHT 0x6B)
+(def ^:const CC_SESSION 0x6C)
+(def ^:const CC_USER1 0x6D)
+(def ^:const CC_USER2 0x6E)
+(def ^:const CC_MIXER 0x6F)
 
 (defn- coordinate-pair-to-index [x y] (+ (+ x 1) (* 10 (+ y 1))))
 
-(defn draw-grid
+(defn light-cell
   "set a cell grid on or off.
   x can be 0 to 8 inclusive (8 is for the top buttons)
   y can be 0 to 8 inclusive (8 is for the most right buttons)
@@ -30,13 +40,18 @@
   :flashing
 
   Examples:
-  (draw-grid lpad 1 2 :green :medium :flashing)
-  (draw-grid lpad 1 2 :off)
+  (light-cell lpad 1 2 :green :medium :flashing)
+  (light-cell lpad 1 2 :off)
   "
   [lpad x y & color-description]
   (let [midi-message      (if (= 8 y) 0xB0 CHANNEL_1_NOTE_ON)]
     (validate-coordinates x y)
     (midi/send-midi lpad midi-message (coordinate-pair-to-index x y) (first color-description))))
+
+(defn light-cc
+  "set a top row control button on or off"
+  [lpad cc-ref & color-description]
+  (midi/send-midi lpad CC_NOTE_ON cc-ref (first color-description)))
 
 (defn flash
   "flash the specified pad between the current color and specified color"
@@ -58,7 +73,7 @@
 (defn clear-grid [lpad]
   "clear the launchpad grid (not the top and left buttons)"
   (dorun (for [x (range 8)
-               y (range 8)] (draw-grid lpad x y :off))))
+               y (range 8)] (light-cell lpad x y :off))))
 
 (defn test-leds
   "lights all the leds in one command. Intensity can be :low, :medium or :high"
