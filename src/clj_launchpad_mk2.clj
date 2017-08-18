@@ -2,9 +2,6 @@
   (:require [midi.core :as midi])
   (:import [javax.sound.midi MidiSystem Receiver]))
 
-(def #^{:private true} intensities
-  { :off 0 :low 1 :medium 2 :high 3 })
-
 (defn- validate-coordinates [x y]
   (if (or (> x 7) (< x 0))
     (throw (javax.sound.midi.InvalidMidiDataException. "x must be in range 0-7 inclusive")))
@@ -71,15 +68,9 @@
   (midi/send-midi-sysex lpad 14 0))
 
 (defn clear-grid [lpad]
-  "clear the launchpad grid (not the top and left buttons)"
+  "clear the launchpad grid (not the top and right buttons)"
   (dorun (for [x (range 8)
-               y (range 8)] (light-cell lpad x y :off))))
-
-(defn test-leds
-  "lights all the leds in one command. Intensity can be :low, :medium or :high"
-  ([lpad] (test-leds lpad :high))
-  ([lpad intensity]
-   (midi/send-midi lpad 0xb0 0 (+ (intensity intensities) 0x7c))))
+               y (range 8)] (dark-cell lpad x y))))
 
 (defn midi-device-names []
   "returns names of available Midi devices, usable with the open function"
@@ -104,7 +95,6 @@
      (do
        (.open out-device)
        (.open in-device)
-       (test-leds lpad)
        (Thread/sleep 100)
        (reset lpad))
      lpad)))

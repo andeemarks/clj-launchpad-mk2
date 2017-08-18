@@ -65,6 +65,11 @@
 			(dark-cell lpad 0 -1) => (throws javax.sound.midi.InvalidMidiDataException)
 			(dark-cell lpad 0 8) => (throws javax.sound.midi.InvalidMidiDataException)))
 
+	(facts "about #clear-grid"
+		(fact "midi/send-midi is called once for each grid cell"
+			(clear-grid lpad) => nil
+			(provided (midi/send-midi lpad CHANNEL_1_NOTE_ON (as-checker #(<= 11 % 88)) 0) => nil :times 64)))
+
 	(facts "about #light-cc"
 		(fact "valid x/y coordinates and color are mapped onto the MIDI message when being dispatched to midi/send-midi"
 			(light-cc lpad CC_CURSOR_UP 127) => nil
