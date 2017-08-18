@@ -33,20 +33,20 @@
   "set a cell grid on or off.
   x can be 0 to 8 inclusive (8 is for the top buttons)
   y can be 0 to 8 inclusive (8 is for the most right buttons)
-  color description is a combination of the following possible values:
-  :off
-  :low :medium :high
-  :red :green :orange
-  :flashing
+  color-description must be 0 to 127 inclusive
 
   Examples:
-  (light-cell lpad 1 2 :green :medium :flashing)
-  (light-cell lpad 1 2 :off)
+  (light-cell lpad 1 2 127)
+  (light-cell lpad 1 2 0)
   "
   [lpad x y & color-description]
-  (let [midi-message      (if (= 8 y) 0xB0 CHANNEL_1_NOTE_ON)]
-    (validate-coordinates x y)
-    (midi/send-midi lpad midi-message (coordinate-pair-to-index x y) (first color-description))))
+  (validate-coordinates x y)
+  (midi/send-midi lpad CHANNEL_1_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
+
+(defn dark-cell
+  [lpad x y]
+  (validate-coordinates x y)
+  (midi/send-midi lpad CHANNEL_1_NOTE_ON (coordinate-pair-to-index x y) 0))
 
 (defn light-cc
   "set a top row control button on or off"

@@ -52,6 +52,19 @@
 			(light-cell lpad 0 0 -1) => (throws javax.sound.midi.InvalidMidiDataException)
 			(light-cell lpad 0 0 128) => (throws javax.sound.midi.InvalidMidiDataException)))
 
+	(facts "about #dark-cell"
+		(fact "valid x/y coordinates and color are mapped onto the MIDI message when being dispatched to midi/send-midi"
+			(dark-cell lpad 2 3) => nil
+			(provided (midi/send-midi lpad CHANNEL_1_NOTE_ON 43 0) => nil)
+			(dark-cell lpad 0 0) => nil
+			(provided (midi/send-midi lpad CHANNEL_1_NOTE_ON 11 0) => nil) )
+		(fact "x coordinate must be within the range 0-7 inclusive"
+			(dark-cell lpad -1 0) => (throws javax.sound.midi.InvalidMidiDataException)
+			(dark-cell lpad 8 0) => (throws javax.sound.midi.InvalidMidiDataException))
+		(fact "y coordinate must be within the range 0-7 inclusive"
+			(dark-cell lpad 0 -1) => (throws javax.sound.midi.InvalidMidiDataException)
+			(dark-cell lpad 0 8) => (throws javax.sound.midi.InvalidMidiDataException)))
+
 	(facts "about #light-cc"
 		(fact "valid x/y coordinates and color are mapped onto the MIDI message when being dispatched to midi/send-midi"
 			(light-cc lpad CC_CURSOR_UP 127) => nil
