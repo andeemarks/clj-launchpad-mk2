@@ -53,6 +53,12 @@
   (validate-color color-description)
   (midi/send-midi-sysex lpad 13 y color-description))
 
+(defn light-column
+  [lpad x color-description]
+  (validate-coordinates x 0)
+  (validate-color color-description)
+  (midi/send-midi-sysex lpad 12 x color-description))
+
 (defn dark-cell
   [lpad x y]
   (validate-coordinates x y)
