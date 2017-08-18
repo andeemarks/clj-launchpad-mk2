@@ -3,9 +3,9 @@
   (:require [midi.core :as midi])
   (:require [clj-launchpad-mk2 :refer :all]))
 
-(def lpad (atom (open)))
+(def lpad "stub-launchpad")
 
-(with-state-changes [(after :contents (close @lpad))]
+(against-background [(open) => lpad]
 	(facts "about #flash"
 		(flash lpad 5 5 60) => nil
 		(provided (midi/send-midi lpad CHANNEL_2_NOTE_ON 66 60) => nil)
