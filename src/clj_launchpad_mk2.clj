@@ -1,9 +1,16 @@
 (ns clj-launchpad-mk2
   (:require [midi.core :as midi])
-  (:import [javax.sound.midi MidiSystem Receiver ShortMessage]))
+  (:import [javax.sound.midi MidiSystem Receiver]))
 
 (def #^{:private true} intensities
   { :off 0 :low 1 :medium 2 :high 3 })
+
+(defn- validate-coordinates [x y]
+  (if (or (> x 7) (< x 0))
+    (throw (javax.sound.midi.InvalidMidiDataException. "x must be in range 0-7 inclusive")))
+
+  (if (or (> y 7) (< y 0))
+    (throw (javax.sound.midi.InvalidMidiDataException. "y must be in range 0-7 inclusive"))))
 
 (defn draw-grid
   "set a cell grid on or off.
@@ -25,11 +32,7 @@
         midi-position     (if (= 8 y)
                             (+ x 0x68)
                             (+ (+ x 1) (* 10 (+ y 1))))   ]
-    (if (or (> x 7) (< x 0))
-      (throw (javax.sound.midi.InvalidMidiDataException. "x must be in range 0-7 inclusive")))
-
-    (if (or (> y 7) (< y 0))
-      (throw (javax.sound.midi.InvalidMidiDataException. "y must be in range 0-7 inclusive")))
+    (validate-coordinates x y)
 
     #_(println
        "x" x
@@ -44,11 +47,18 @@
         midi-message      0x91
         midi-position     (+ (+ x 1) (* 10 (+ y 1)))   ]
         
-    (if (or (> x 7) (< x 0))
-      (throw (javax.sound.midi.InvalidMidiDataException. "x must be in range 0-7 inclusive")))
+    (validate-coordinates x y)
 
-    (if (or (> y 7) (< y 0))
-      (throw (javax.sound.midi.InvalidMidiDataException. "y must be in range 0-7 inclusive")))
+    (midi/send-midi lpad midi-message midi-position velocity)))
+
+(defn pulse
+  "pulse the specified pad with the specified color"
+  [lpad x y & color-description]
+  (let [velocity          (first color-description)
+        midi-message      0x92
+        midi-position     (+ (+ x 1) (* 10 (+ y 1)))   ]
+
+    (validate-coordinates x y)
 
     (midi/send-midi lpad midi-message midi-position velocity)))
 
