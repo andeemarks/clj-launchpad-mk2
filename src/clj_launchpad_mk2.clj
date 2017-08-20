@@ -43,11 +43,23 @@
   (validate-coordinates x y)
   (midi/send-midi lpad CHANNEL_1_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
 
-(defn scroll-text-once
-  [lpad text color-description]
+(defn- scroll-text-common
+  [lpad text color-description loop-flag]
   (let [encoded-text (map #(int (char %)) text)]
     (validate-color color-description)
-    (midi/send-midi-sysex-scroll lpad encoded-text 20 color-description 0 )))
+    (midi/send-midi-sysex-scroll lpad encoded-text 20 color-description loop-flag)))
+
+(defn scroll-text-once
+  [lpad text color-description]
+  (scroll-text-common lpad text color-description 0))
+
+(defn scroll-text
+  [lpad text color-description]
+  (scroll-text-common lpad text color-description 1))
+
+(defn scroll-stop
+  [lpad]
+  (midi/send-midi-sysex lpad 20))
 
 (defn light-row
   [lpad y color-description]
