@@ -15,19 +15,19 @@ This gem provides a Clojure interface to access the [Novation Launchpad MK2](htt
 ## REPL Usage
 
 ```clojure
-	(require '[clj-launchpad-mk2 :refer :all])
+(require '[clj-launchpad-mk2 :refer :all])
 
-	(def lpad (open))			; first argument to all subsequent calls
+(def lpad (open))			; first argument to all subsequent calls
 
-	(light-grid lpad 23) 			; light all buttons
-	(light-row lpad 3 66) 			; light a single row of buttons
-	(light-column lpad 3 99) 		; light a single column of buttons
- 	(flash lpad 5 5 60) 			; flash a single cell between it's current colour and 60
- 	(pulse lpad 4 4 10) 			; pulse (adjust brightness) of a single cell 
- 	(light-cc lpad CC_CURSOR_RIGHT 11) 	; light a specific control button
- 	(light-cell lpad 0 0 35) 		; light a specific cell
- 	(clear-grid lpad) 			; clear all cells
- 	(close lpad)				; disconnect
+(light-grid lpad 23) 			; light all buttons
+(light-row lpad 3 66) 			; light a single row of buttons
+(light-column lpad 3 99) 		; light a single column of buttons
+(flash lpad 5 5 60) 			; flash a single cell between it's current colour and 60
+(pulse lpad 4 4 10) 			; pulse (adjust brightness) of a single cell 
+(light-cc lpad CC_CURSOR_RIGHT 11) 	; light a specific control button
+(light-cell lpad 0 0 35) 		; light a specific cell
+(clear-grid lpad) 			; clear all cells
+(close lpad)				; disconnect
  ```
 
 ## To Do
