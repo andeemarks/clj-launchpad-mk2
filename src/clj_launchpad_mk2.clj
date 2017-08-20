@@ -45,7 +45,9 @@
 
 (defn scroll-text-once
   [lpad text color-description]
-  (midi/send-midi-sysex lpad 20 color-description 0))
+  (let [encoded-text (map #(int (char %)) text)]
+    (validate-color color-description)
+    (midi/send-midi-sysex-scroll lpad encoded-text 20 color-description 0 )))
 
 (defn light-row
   [lpad y color-description]

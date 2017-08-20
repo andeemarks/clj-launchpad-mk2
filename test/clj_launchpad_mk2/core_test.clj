@@ -62,9 +62,13 @@
 			(light-grid lpad -1) => (throws javax.sound.midi.InvalidMidiDataException)
 			(light-grid lpad 128) => (throws javax.sound.midi.InvalidMidiDataException) ))
 
-	(future-facts "about #scroll-text-once"
-		(scroll-text-once lpad "Hello world" 70) => nil
-		(provided (midi/send-midi-sysex lpad 20 70 0 anything) => nil))
+	(facts "about #scroll-text-once"
+		(fact "a sysex message with the appropriate status byte and ASCII codes for characters is sent"
+			(scroll-text-once lpad "Hello" 70) => nil
+			(provided (midi/send-midi-sysex-scroll lpad '(72 101 108 108 111) 20 70 0 ) => nil))
+		(fact "color must be within the range 0-127 inclusive"
+			(scroll-text-once lpad "Hello world" -1) => (throws javax.sound.midi.InvalidMidiDataException)
+			(scroll-text-once lpad "Hello world" 128) => (throws javax.sound.midi.InvalidMidiDataException) ))
 
 	(facts "about #light-cell"
 		(fact "valid x/y coordinates and color are mapped onto the MIDI message when being dispatched to midi/send-midi"

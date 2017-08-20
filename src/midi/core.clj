@@ -9,8 +9,15 @@
          (doto (ShortMessage.) (.setMessage (nth args 0) (nth args 1) (nth args 2)))
          -1))
 
+(defn- send-midi-sysex-common [out contents]
+  (.send out
+         (doto (SysexMessage.) (.setMessage contents (count contents)))
+         -1))
+
 (defn send-midi-sysex [{:keys [out]} & args]
   (let [contents (byte-array (concat SYSEX_HEADER args SYSEX_FOOTER))]
-    (.send out
-           (doto (SysexMessage.) (.setMessage contents (count contents)))
-           -1)))
+  	(send-midi-sysex-common out contents)))
+
+(defn send-midi-sysex-scroll [{:keys [out]} text & args]
+  (let [contents (byte-array (concat SYSEX_HEADER args text SYSEX_FOOTER))]
+  	(send-midi-sysex-common out contents)))
