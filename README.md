@@ -6,11 +6,24 @@ This gem provides a Clojure interface to access the [Novation Launchpad MK2](htt
 
 *   Novation's Launchpad MK2 MIDI [programmer's reference](https://global.novationmusic.com/sites/default/files/novation/downloads/10529/launchpad-mk2-programmers-reference-guide_0.pdf) was the sole source for helping me understand how to interact with the Launchpad.
 
-## Requirements
-
-## Compatibility
-
 ## Installation
+
+#### Leiningen/Boot
+
+```[clj-launchpad-mk2 "0.0.1"]```
+
+#### Gradle
+
+```compile "clj-launchpad-mk2:clj-launchpad-mk2:0.0.1"```
+
+#### Maven
+```
+<dependency>
+  <groupId>clj-launchpad-mk2</groupId>
+  <artifactId>clj-launchpad-mk2</artifactId>
+  <version>0.0.1</version>
+</dependency>
+```
 
 ## REPL Usage
 
