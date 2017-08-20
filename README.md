@@ -40,6 +40,10 @@ This library provides a Clojure interface to access the [Novation Launchpad MK2]
 (light-cc lpad CC_CURSOR_RIGHT 11) 	; light a specific control button
 (light-cell lpad 0 0 35) 		; light a specific cell
 (clear-grid lpad) 			; clear all cells
+(scroll-text-once lpad "Launchpad" 54)	; scrolling text once only
+(scroll-text lpad "MK2" 60)		; scroll text in a loop
+(scroll-stop lpad)			; stop looped scrolling
+
 (close lpad)				; disconnect
  ```
 
