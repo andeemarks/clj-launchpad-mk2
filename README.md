@@ -10,18 +10,18 @@ This library provides a Clojure interface to access the [Novation Launchpad MK2]
 
 #### Leiningen/Boot
 
-```[clj-launchpad-mk2 "0.0.1"]```
+```[clj-launchpad-mk2 "0.0.3"]```
 
 #### Gradle
 
-```compile "clj-launchpad-mk2:clj-launchpad-mk2:0.0.1"```
+```compile "clj-launchpad-mk2:clj-launchpad-mk2:0.0.3"```
 
 #### Maven
 ```
 <dependency>
   <groupId>clj-launchpad-mk2</groupId>
   <artifactId>clj-launchpad-mk2</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.3</version>
 </dependency>
 ```
 
