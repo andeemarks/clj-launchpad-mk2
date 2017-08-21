@@ -21,13 +21,21 @@
 	(fact "control-button? is derived from note/data1"
 		(:control-button? (message-from  176 0 103 0)) => falsey
 		(:control-button? (message-from  176 0 104 0)) => truthy
+		(:cursor-up-button? (message-from  176 0 104 0)) => truthy
 		(:control-button? (message-from  176 0 105 0)) => truthy
+		(:cursor-down-button? (message-from  176 0 105 0)) => truthy
 		(:control-button? (message-from  176 0 106 0)) => truthy
+		(:cursor-left-button? (message-from  176 0 106 0)) => truthy
 		(:control-button? (message-from  176 0 107 0)) => truthy
+		(:cursor-right-button? (message-from  176 0 107 0)) => truthy
 		(:control-button? (message-from  176 0 108 0)) => truthy
+		(:session-button? (message-from  176 0 108 0)) => truthy
 		(:control-button? (message-from  176 0 109 0)) => truthy
+		(:user-1-button? (message-from  176 0 109 0)) => truthy
 		(:control-button? (message-from  176 0 110 0)) => truthy
+		(:user-2-button? (message-from  176 0 110 0)) => truthy
 		(:control-button? (message-from  176 0 111 0)) => truthy
+		(:mixer-button? (message-from  176 0 111 0)) => truthy
 		(:control-button? (message-from  176 0 112 0)) => falsey)		
 	(fact "scene-button? is derived from note/data1"
 		(:scene-button? (message-from  144 0 9 0)) => falsey

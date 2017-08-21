@@ -48,6 +48,14 @@
 	   :button-up? (= 0 data2)
 	   :control-button? (<= 104 data1 111)
 	   :scene-button? (and (= x 8) (<= 0 y 7))
+	   :cursor-up-button? (= data1 CC_CURSOR_UP)
+	   :cursor-down-button? (= data1 CC_CURSOR_DOWN)
+	   :cursor-left-button? (= data1 CC_CURSOR_LEFT)
+	   :cursor-right-button? (= data1 CC_CURSOR_RIGHT)
+	   :session-button? (= data1 CC_SESSION)
+	   :user-1-button? (= data1 CC_USER1)
+	   :user-2-button? (= data1 CC_USER2)
+	   :mixer-button? (= data1 CC_MIXER)
 	   :data1 data1
 	   :data2 data2
 	   }))

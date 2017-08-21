@@ -39,16 +39,18 @@
 
 (defn- handle-button-press [lpad]
   (fn [msg timestamp]
-    (let [x (:x msg)
-          y (:y msg)
-          color (- 127 (+ x y))]
-      (light-cell lpad x y color))))
+    ; (println msg)
+    (if (:mixer-button? msg)
+      (close lpad)
+      (let [x (:x msg)
+            y (:y msg)
+            color (- 127 (+ x y))]
+        (light-cell lpad x y color)))))
 
 (defn- light-pressed-button [lpad]
   (scroll-text-once lpad "Touch me!" 54)
 
-  (set-button-press-handler lpad (handle-button-press lpad))
-  (Thread/sleep 5000))
+  (set-button-press-handler lpad (handle-button-press lpad)))
 
 (defn -main [& args]
   (let [lpad (open)]
@@ -61,5 +63,4 @@
       (clear-grid)       
       (brightness-quadrants)
       (clear-grid)       
-      (light-pressed-button)
-      (close))))
+      (light-pressed-button))))

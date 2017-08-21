@@ -140,9 +140,11 @@
 (defn set-button-press-handler 
   "Specify a single handler that will receive all midi events from the input device."
   [lpad handler-fn]
-  (let [receiver (proxy [Receiver] []
-                   (close [] nil)
-                   (send [msg timestamp] (handler-fn (midi/decode-message msg) timestamp)))]
+  (let [receiver  (proxy [Receiver] []
+                    (close [] nil)
+                    (send [msg timestamp] 
+                      (if (= (type msg) com.sun.media.sound.FastShortMessage)
+                        (handler-fn (midi/decode-message msg) timestamp))))]
     (.setReceiver (:in lpad) receiver)))
 
 (defn close [lpad]
