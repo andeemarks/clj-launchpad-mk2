@@ -55,6 +55,8 @@ This library provides a Clojure interface to access the [Novation Launchpad MK2]
 
 ## To Do
 
+* Fix input handling
+
 ## Copyright
 
 Copyright (c) 2017 Andy Marks. See LICENSE for details.
