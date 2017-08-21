@@ -49,6 +49,15 @@ This library provides a Clojure interface to access the [Novation Launchpad MK2]
 (rgb lpad 0 2 32 0 0)
 (rgb lpad 0 3 48 0 0)
 (rgb lpad 0 4 63 0 0)
+(set-button-press-handler 		; "random" light pressed button
+	lpad 		
+	(fn 
+		[msg timestamp]
+		(light-cell 
+			lpad 
+			(:x msg) 
+			(:y msg) 
+			(- 127 (+ (:x msg) (:y msg))))))
 
 (close lpad)				; disconnect
  ```
