@@ -5,6 +5,7 @@
             :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]]
   :deploy-repositories [["clojars"  {:sign-releases false :url "https://clojars.org/repo"}]]  
+  :main demo
   :plugins
     [
       [lein-cljfmt "0.5.6"]]
