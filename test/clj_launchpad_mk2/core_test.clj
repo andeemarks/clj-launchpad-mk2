@@ -43,6 +43,24 @@
 			(light-row lpad 5 -1) => (throws javax.sound.midi.InvalidMidiDataException)
 			(light-row lpad 5 128) => (throws javax.sound.midi.InvalidMidiDataException) ))
 
+	(facts "about #rgb"
+		(fact "a sysex message with the appropriate status byte is sent"
+			(rgb lpad 4 7 0 0 0) => nil
+			(provided (midi/send-midi-sysex lpad 11 85 0 0 0) => nil))
+		(fact "y coordinate must be within the range 0-7 inclusive"
+			(rgb lpad 4 -1 0 0 0) => (throws javax.sound.midi.InvalidMidiDataException)
+			(rgb lpad 4 8 0 0 0) => (throws javax.sound.midi.InvalidMidiDataException))
+		(fact "x coordinate must be within the range 0-7 inclusive"
+			(rgb lpad -1 7 0 0 0) => (throws javax.sound.midi.InvalidMidiDataException)
+			(rgb lpad 8 7 0 0 0) => (throws javax.sound.midi.InvalidMidiDataException))
+		(fact "each RGB component must be within the range 0-63 inclusive"
+			(rgb lpad 4 7 -1 0 0) => (throws javax.sound.midi.InvalidMidiDataException)
+			(rgb lpad 4 7 64 0 0) => (throws javax.sound.midi.InvalidMidiDataException)
+			(rgb lpad 4 7 0 -1 0) => (throws javax.sound.midi.InvalidMidiDataException)
+			(rgb lpad 4 7 0 64 0) => (throws javax.sound.midi.InvalidMidiDataException)
+			(rgb lpad 4 7 0 0 -1) => (throws javax.sound.midi.InvalidMidiDataException)
+			(rgb lpad 4 7 0 0 64) => (throws javax.sound.midi.InvalidMidiDataException)))
+
 	(facts "about #light-column"
 		(fact "a sysex message with the appropriate status byte is sent"
 			(light-column lpad 3 65) => nil

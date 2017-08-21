@@ -43,6 +43,11 @@ This library provides a Clojure interface to access the [Novation Launchpad MK2]
 (scroll-text-once lpad "Launchpad" 54)	; scrolling text once only
 (scroll-text lpad "MK2" 60)		; scroll text in a loop
 (scroll-stop lpad)			; stop looped scrolling
+(rgb lpad 0 0 0 0 0)			; progressively increase the RED component of a series of cells
+(rgb lpad 0 1 16 0 0)
+(rgb lpad 0 2 32 0 0)
+(rgb lpad 0 3 48 0 0)
+(rgb lpad 0 4 63 0 0)
 
 (close lpad)				; disconnect
  ```

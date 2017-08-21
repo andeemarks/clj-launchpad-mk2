@@ -9,6 +9,15 @@
   (if (or (> y 7) (< y 0))
     (throw (javax.sound.midi.InvalidMidiDataException. "y must be in range 0-7 inclusive"))))
 
+(defn- validate-rgb-component [component]
+  (if (or (> component 63) (< component 0))
+    (throw (javax.sound.midi.InvalidMidiDataException. "RGB components must be in range 0-63 inclusive"))))
+
+(defn- validate-rgb [red green blue]
+  (validate-rgb-component red)
+  (validate-rgb-component green)
+  (validate-rgb-component blue))
+
 (defn- validate-color [color]
   (if (or (> color 127) (< color 0))
     (throw (javax.sound.midi.InvalidMidiDataException. "color must be in range 0-127 inclusive"))))
@@ -66,6 +75,12 @@
   (validate-coordinates 0 y)
   (validate-color color-description)
   (midi/send-midi-sysex lpad 13 y color-description))
+
+(defn rgb
+  [lpad x y red green blue]
+  (validate-coordinates x y)
+  (validate-rgb red green blue)
+  (midi/send-midi-sysex lpad 11 (coordinate-pair-to-index x y) red green blue))
 
 (defn light-column
   [lpad x color-description]
