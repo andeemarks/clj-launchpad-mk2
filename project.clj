@@ -1,4 +1,4 @@
-(defproject clj-launchpad-mk2 "0.1.0"
+(defproject clj-launchpad-mk2 "0.1.1"
   :description "Novation Launchpad MK2 library for clojure"
   :url "https://github.com/andeemarks/clj-launchpad-mk2"
   :license {:name "MIT"
