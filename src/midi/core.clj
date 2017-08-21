@@ -21,3 +21,18 @@
 (defn send-midi-sysex-scroll [{:keys [out]} text & args]
   (let [contents (byte-array (concat SYSEX_HEADER args text SYSEX_FOOTER))]
   	(send-midi-sysex-common out contents)))
+
+(defn decode-message 
+  "Make a clojure map out of a midi object."
+  [obj]
+  {:channel (.getChannel obj)
+   :command  (.getCommand obj)
+   :note (.getData1 obj)
+   :x (- (rem (.getData1 obj) 10) 1)
+   :y (- (quot (.getData1 obj) 10) 1)
+   :velocity  (.getData2 obj)
+   :button-down? (= 127 (.getData2 obj))
+   :button-up? (= 0 (.getData2 obj))
+   :data1 (.getData1 obj)
+   :data2 (.getData2 obj)
+   })
