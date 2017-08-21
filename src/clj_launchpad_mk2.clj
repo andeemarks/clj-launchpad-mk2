@@ -27,15 +27,6 @@
 (def ^:const CHANNEL_3_NOTE_ON 0x92)
 (def ^:const CC_NOTE_ON 0xB0)
 
-(def ^:const CC_CURSOR_UP 0x68)
-(def ^:const CC_CURSOR_DOWN 0x69)
-(def ^:const CC_CURSOR_LEFT 0x6A)
-(def ^:const CC_CURSOR_RIGHT 0x6B)
-(def ^:const CC_SESSION 0x6C)
-(def ^:const CC_USER1 0x6D)
-(def ^:const CC_USER2 0x6E)
-(def ^:const CC_MIXER 0x6F)
-
 (defn- coordinate-pair-to-index [x y] (+ (+ x 1) (* 10 (+ y 1))))
 
 (defn light-cell

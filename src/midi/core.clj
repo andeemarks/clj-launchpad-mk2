@@ -4,6 +4,15 @@
 (def ^:const SYSEX_HEADER [240 0 32 41 2 24])
 (def ^:const SYSEX_FOOTER [247])
 
+(def ^:const CC_CURSOR_UP 0x68)
+(def ^:const CC_CURSOR_DOWN 0x69)
+(def ^:const CC_CURSOR_LEFT 0x6A)
+(def ^:const CC_CURSOR_RIGHT 0x6B)
+(def ^:const CC_SESSION 0x6C)
+(def ^:const CC_USER1 0x6D)
+(def ^:const CC_USER2 0x6E)
+(def ^:const CC_MIXER 0x6F)
+
 (defn send-midi [{:keys [out]} & args]
   (.send out
          (doto (ShortMessage.) (.setMessage (nth args 0) (nth args 1) (nth args 2)))
