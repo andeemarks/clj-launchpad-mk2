@@ -1,4 +1,5 @@
-# clj-launchpad-mk2 [<img src="https://travis-ci.org/andeemarks/clj-launchpad-mk2.png?branch=master" alt="Build Status" />](https://travis-ci.org/andeemarks/clj-launchpad-mk2) [![Clojars Project](https://img.shields.io/clojars/v/clj-launchpad-mk2.svg)](https://clojars.org/clj-launchpad-mk2)
+# clj-launchpad-mk2 
+[<img src="https://travis-ci.org/andeemarks/clj-launchpad-mk2.png?branch=master" alt="Build Status" />](https://travis-ci.org/andeemarks/clj-launchpad-mk2) [![Clojars Project](https://img.shields.io/clojars/v/clj-launchpad-mk2.svg)](https://clojars.org/clj-launchpad-mk2) [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
 This library provides a Clojure interface to access the [Novation Launchpad MK2](https://global.novationmusic.com/launch/launchpad#) programmatically. The code started life as a clone of [Moumar's Clojar](https://github.com/moumar/clj-launchpad) and was subsequently updated to handle the MK2 version of the Launchpad.  The mapping of buttons and specification of colours completely changed when the MK2 was released, so lots of the original code in these areas has been re-written, but much of the interaction code is still largely intact.
 
