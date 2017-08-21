@@ -15,6 +15,28 @@
 	(fact "x & y are derived from note/data1"
 		(:x (decode-message sample-message)) => 2
 		(:y (decode-message sample-message)) => 1 )
+	(fact "control-button? is derived from note/data1"
+		(:control-button? (decode-message (javax.sound.midi.ShortMessage. 176 0 103 0))) => falsey
+		(:control-button? (decode-message (javax.sound.midi.ShortMessage. 176 0 104 0))) => truthy
+		(:control-button? (decode-message (javax.sound.midi.ShortMessage. 176 0 105 0))) => truthy
+		(:control-button? (decode-message (javax.sound.midi.ShortMessage. 176 0 106 0))) => truthy
+		(:control-button? (decode-message (javax.sound.midi.ShortMessage. 176 0 107 0))) => truthy
+		(:control-button? (decode-message (javax.sound.midi.ShortMessage. 176 0 108 0))) => truthy
+		(:control-button? (decode-message (javax.sound.midi.ShortMessage. 176 0 109 0))) => truthy
+		(:control-button? (decode-message (javax.sound.midi.ShortMessage. 176 0 110 0))) => truthy
+		(:control-button? (decode-message (javax.sound.midi.ShortMessage. 176 0 111 0))) => truthy
+		(:control-button? (decode-message (javax.sound.midi.ShortMessage. 176 0 112 0))) => falsey)		
+	(fact "scene-button? is derived from note/data1"
+		(:scene-button? (decode-message (javax.sound.midi.ShortMessage. 144 0 9 0))) => falsey
+		(:scene-button? (decode-message (javax.sound.midi.ShortMessage. 144 0 99 0))) => falsey
+		(:scene-button? (decode-message (javax.sound.midi.ShortMessage. 144 0 19 0))) => truthy
+		(:scene-button? (decode-message (javax.sound.midi.ShortMessage. 144 0 29 0))) => truthy
+		(:scene-button? (decode-message (javax.sound.midi.ShortMessage. 144 0 39 0))) => truthy
+		(:scene-button? (decode-message (javax.sound.midi.ShortMessage. 144 0 49 0))) => truthy
+		(:scene-button? (decode-message (javax.sound.midi.ShortMessage. 144 0 59 0))) => truthy
+		(:scene-button? (decode-message (javax.sound.midi.ShortMessage. 144 0 69 0))) => truthy
+		(:scene-button? (decode-message (javax.sound.midi.ShortMessage. 144 0 79 0))) => truthy
+		(:scene-button? (decode-message (javax.sound.midi.ShortMessage. 144 0 89 0))) => truthy)		
 	(fact "button-down? and button-up? are derived from velocity/data2"
 		(:button-down? (decode-message sample-message)) => truthy
 		(:button-up? (decode-message sample-message)) => falsey
