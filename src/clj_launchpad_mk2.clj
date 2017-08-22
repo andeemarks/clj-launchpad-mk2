@@ -22,11 +22,6 @@
   (if (or (> color 127) (< color 0))
     (throw (javax.sound.midi.InvalidMidiDataException. "color must be in range 0-127 inclusive"))))
 
-(def ^:const ^:no-doc CHANNEL_1_NOTE_ON 0x90)
-(def ^:const ^:no-doc CHANNEL_2_NOTE_ON 0x91)
-(def ^:const ^:no-doc CHANNEL_3_NOTE_ON 0x92)
-(def ^:const ^:no-doc CC_NOTE_ON 0xB0)
-
 (defn- coordinate-pair-to-index [x y] (+ (+ x 1) (* 10 (+ y 1))))
 
 (defn light-cell
@@ -44,13 +39,13 @@
   "
   [lpad x y & color-description]
   (validate-coordinates x y)
-  (midi/send-midi lpad CHANNEL_1_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
+  (midi/send-midi lpad midi/CHANNEL_1_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
 
 (defn- scroll-text-common
   [lpad text color-description loop-flag]
   (let [encoded-text (map #(int (char %)) text)]
     (validate-color color-description)
-    (midi/send-midi-sysex-scroll lpad encoded-text 20 color-description loop-flag)))
+    (midi/send-midi-sysex-scroll lpad encoded-text midi/SYSEX_SCROLL_STATUS color-description loop-flag)))
 
 (defn scroll-text-once
   "Scroll (right->left) the specified text once only.  The text will be displayed in the specified color.
@@ -88,7 +83,7 @@
   (scroll-stop lpad)
   ```"
   [lpad]
-  (midi/send-midi-sysex lpad 20))
+  (midi/send-midi-sysex lpad midi/SYSEX_SCROLL_STATUS))
 
 (defn light-row
   "Set all the buttons in the specified row to the specified color.
@@ -104,7 +99,7 @@
   [lpad y color-description]
   (validate-coordinates 0 y)
   (validate-color color-description)
-  (midi/send-midi-sysex lpad 13 y color-description))
+  (midi/send-midi-sysex lpad midi/SYSEX_LIGHT_ROW_STATUS y color-description))
 
 (defn rgb
   "Set the specified buttons to the specified combination of red, green and blue.
@@ -123,7 +118,7 @@
   [lpad x y red green blue]
   (validate-coordinates x y)
   (validate-rgb red green blue)
-  (midi/send-midi-sysex lpad 11 (coordinate-pair-to-index x y) red green blue))
+  (midi/send-midi-sysex lpad midi/SYSEX_RGB_STATUS (coordinate-pair-to-index x y) red green blue))
 
 (defn light-column
   "Set all the buttons in the specified column to the specified color.
@@ -139,7 +134,7 @@
   [lpad x color-description]
   (validate-coordinates x 0)
   (validate-color color-description)
-  (midi/send-midi-sysex lpad 12 x color-description))
+  (midi/send-midi-sysex lpad midi/SYSEX_LIGHT_COLUMN_STATUS x color-description))
 
 (defn light-grid
   "Set all the buttons on the grid to the specified color.
@@ -153,7 +148,7 @@
   "
   [lpad color-description]
   (validate-color color-description)
-  (midi/send-midi-sysex lpad 14 color-description))
+  (midi/send-midi-sysex lpad midi/SYSEX_LIGHT_GRID_STATUS color-description))
 
 (defn clear-cell
   "set the specified button off.
@@ -168,7 +163,7 @@
   "
   [lpad x y]
   (validate-coordinates x y)
-  (midi/send-midi lpad CHANNEL_1_NOTE_ON (coordinate-pair-to-index x y) 0))
+  (midi/send-midi lpad midi/CHANNEL_1_NOTE_ON (coordinate-pair-to-index x y) 0))
 
 (defn light-cc
   "set a top row control button to the specified color.
@@ -182,7 +177,7 @@
   ```
   "
   [lpad cc-ref & color-description]
-  (midi/send-midi lpad CC_NOTE_ON cc-ref (first color-description)))
+  (midi/send-midi lpad midi/CC_NOTE_ON cc-ref (first color-description)))
 
 (defn flash
   "flash the specified button between the current color and specified color
@@ -199,7 +194,7 @@
   "
   [lpad x y & color-description]
   (validate-coordinates x y)
-  (midi/send-midi lpad CHANNEL_2_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
+  (midi/send-midi lpad midi/CHANNEL_2_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
 
 (defn pulse
   "pulse (i.e., vary the brightness) the specified button from off to the specified color
@@ -215,7 +210,7 @@
   "
   [lpad x y & color-description]
   (validate-coordinates x y)
-  (midi/send-midi lpad CHANNEL_3_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
+  (midi/send-midi lpad midi/CHANNEL_3_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
 
 (defn clear-grid [lpad]
   "Turn off all the grid buttons.
@@ -225,7 +220,7 @@
   (clear-grid lpad)
   ```
   "
-  (midi/send-midi-sysex lpad 14 0))
+  (midi/send-midi-sysex lpad midi/SYSEX_LIGHT_GRID_STATUS 0))
 
 (defn open
   ([]

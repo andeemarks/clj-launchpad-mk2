@@ -2,6 +2,17 @@
 	"Holds the functions which 'talk MIDI' to the Launchpad via messages in the ```javax.sound.midi``` package."
   (:import [javax.sound.midi MidiSystem Receiver ShortMessage SysexMessage]))
 
+(def ^:const ^:no-doc CHANNEL_1_NOTE_ON 0x90)
+(def ^:const ^:no-doc CHANNEL_2_NOTE_ON 0x91)
+(def ^:const ^:no-doc CHANNEL_3_NOTE_ON 0x92)
+(def ^:const ^:no-doc CC_NOTE_ON 0xB0)
+
+(def ^:const SYSEX_RGB_STATUS "The status byte for a RGB Sysex message" 11)
+(def ^:const SYSEX_SCROLL_STATUS "The status byte for a scroll text Sysex message" 20)
+(def ^:const SYSEX_LIGHT_ROW_STATUS "The status byte for a light row Sysex message" 13)
+(def ^:const SYSEX_LIGHT_COLUMN_STATUS "The status byte for a light column Sysex message" 12)
+(def ^:const SYSEX_LIGHT_GRID_STATUS "The status byte for a light grid Sysex message" 14)
+
 (def ^:const SYSEX_HEADER "The common set of header bytes sent with each Sysex message" [240 0 32 41 2 24])
 (def ^:const SYSEX_FOOTER "The common set of footer bytes sent with each Sysex message" [247])
 
