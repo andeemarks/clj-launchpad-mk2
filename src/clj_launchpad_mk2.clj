@@ -22,10 +22,10 @@
   (if (or (> color 127) (< color 0))
     (throw (javax.sound.midi.InvalidMidiDataException. "color must be in range 0-127 inclusive"))))
 
-(def ^:const ^:private CHANNEL_1_NOTE_ON 0x90)
-(def ^:const ^:private CHANNEL_2_NOTE_ON 0x91)
-(def ^:const ^:private CHANNEL_3_NOTE_ON 0x92)
-(def ^:const ^:private CC_NOTE_ON 0xB0)
+(def ^:const CHANNEL_1_NOTE_ON 0x90)
+(def ^:const CHANNEL_2_NOTE_ON 0x91)
+(def ^:const CHANNEL_3_NOTE_ON 0x92)
+(def ^:const CC_NOTE_ON 0xB0)
 
 (defn- coordinate-pair-to-index [x y] (+ (+ x 1) (* 10 (+ y 1))))
 
