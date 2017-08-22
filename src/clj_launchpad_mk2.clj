@@ -22,10 +22,10 @@
   (if (or (> color 127) (< color 0))
     (throw (javax.sound.midi.InvalidMidiDataException. "color must be in range 0-127 inclusive"))))
 
-(def ^:const CHANNEL_1_NOTE_ON 0x90)
-(def ^:const CHANNEL_2_NOTE_ON 0x91)
-(def ^:const CHANNEL_3_NOTE_ON 0x92)
-(def ^:const CC_NOTE_ON 0xB0)
+(def ^:const ^:private CHANNEL_1_NOTE_ON 0x90)
+(def ^:const ^:private CHANNEL_2_NOTE_ON 0x91)
+(def ^:const ^:private CHANNEL_3_NOTE_ON 0x92)
+(def ^:const ^:private CC_NOTE_ON 0xB0)
 
 (defn- coordinate-pair-to-index [x y] (+ (+ x 1) (* 10 (+ y 1))))
 
@@ -189,10 +189,6 @@
   (clear-grid lpad)"
   (midi/send-midi-sysex lpad 14 0))
 
-(defn midi-device-names []
-  "returns names of available Midi devices, usable with the open function"
-  (map #(.getName %) (MidiSystem/getMidiDeviceInfo)))
-
 (defn open
   ([]
    "find the launchpad name \"MK2 [hw:2,0,0]\" in the available midi devices and return a launchpad object suitable for the calls of this library"
@@ -239,6 +235,11 @@
     (.setReceiver (:in lpad) receiver)))
 
 (defn remove-button-press-handler 
+  "Remove any event handlers.
+
+  Examples:
+  (remove-button-press-handler lpad)
+  "
   [lpad]
   (let [receiver  (proxy [Receiver] []
                     (close [] nil)
@@ -246,5 +247,9 @@
     (.setReceiver (:in lpad) receiver)))
 
 (defn close [lpad]
-  "close the launchpad device"
+  "close the launchpad device.
+
+  Examples:
+  (close lpad)
+  "
   (dorun (map #(.close %) (vals lpad))))
