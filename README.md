@@ -64,6 +64,10 @@ This library provides a Clojure interface to access the [Novation Launchpad MK2]
 
 You can also try ```lein run``` to run the examples in ```demo.clj```.
 
+## API
+
+API documentation available [here](https://andeemarks.github.io/clj-launchpad-mk2/).
+
 ## To Do
 
 * Fix midi error at end of demo.
