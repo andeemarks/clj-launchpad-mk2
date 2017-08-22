@@ -1,8 +1,9 @@
 (ns midi.core
+	"Holds the functions which 'talk MIDI' to the Launchpad via messages in the ```javax.sound.midi``` package."
   (:import [javax.sound.midi MidiSystem Receiver ShortMessage SysexMessage]))
 
-(def ^:const ^:private SYSEX_HEADER [240 0 32 41 2 24])
-(def ^:const ^:private SYSEX_FOOTER [247])
+(def ^:const SYSEX_HEADER "The common set of header bytes sent with each Sysex message" [240 0 32 41 2 24])
+(def ^:const SYSEX_FOOTER "The common set of footer bytes sent with each Sysex message" [247])
 
 (def ^:const CC_CURSOR_UP "Identifies the cursor up control button in messages sent to/from the Launchpad." 0x68)
 (def ^:const CC_CURSOR_DOWN "Identifies the cursor down control button in messages sent to/from the Launchpad."0x69)
@@ -14,12 +15,10 @@
 (def ^:const CC_MIXER "Identifies the \"Mixer\" control button in messages sent to/from the Launchpad." 0x6F)
 
 (defn send-midi
-	"Sends a ```javax.sound.midi.ShortMessage``` to the specified device.
+	"Sends a [javax.sound.midi.ShortMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/ShortMessage.html) to the specified device.
 
-	* out should be the Launchpad receiving the message.
-	* args should be a three element sequence containing the status, data1 and data2 components of the message respectively.
-
-	See https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/ShortMessage.html#ShortMessage(int,%20int,%20int)
+	* `out` should be the Launchpad receiving the message.
+	* `args` should be a three element sequence containing the `status`, `data1` and `data2` components of the message respectively.
 
 	Examples:
 	```
@@ -37,12 +36,10 @@
          -1))
 
 (defn send-midi-sysex
-	"Sends a ```javax.sound.midi.SysexMessage``` to the specified device.
+	"Sends a [javax.sound.midi.SysexMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html) to the specified device.
 
-	* out should be the Launchpad receiving the message.
-	* args should be an arbitary length sequence which will be wrapped by Launchpad Sysex header and footer information and converted to a byte array.
-
-	See https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html#setMessage(byte[],%20int)
+	* `out` should be the Launchpad receiving the message.
+	* `args` should be an arbitary length sequence which will be wrapped by [[SYSEX_HEADER]] and [[SYSEX_FOOTER]] information and converted to a byte array.
 
 	Examples:
 	```
@@ -54,18 +51,16 @@
   	(send-midi-sysex-common out contents)))
 
 (defn send-midi-sysex-scroll
- 	"Sends a ```javax.sound.midi.SysexMessage``` to the specified device to produce scrolling text.
+ 	"Sends a [javax.sound.midi.SysexMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html) to the specified device to produce scrolling text.
 	
-	* out should be the Launchpad receiving the message.
-	* text should be the text to scroll.
-	* args should be an arbitary length sequence which will be wrapped by Launchpad Sysex header, text and footer information and converted to a byte array.
-
-	See https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html#setMessage(byte[],%20int)
+	* `out` should be the Launchpad receiving the message.
+	* `text` should be a sequence of integers representing the letters of the text to scroll (e.g., `(map #(int (char %)) \"Hello\")`.
+	* `args` should be an arbitary length sequence which will be wrapped by [[SYSEX_HEADER]], text and [[SYSEX_FOOTER]] information and converted to a byte array.
 
 	Examples:
 
 	```
-	(send-midi-sysex lpad (72 101 108 108 111) 20 45 0)
+	(send-midi-sysex-scroll lpad (72 101 108 108 111) 20 45 0)
 	```
 	"
 	[{:keys [out]} text & args]
@@ -73,9 +68,17 @@
   	(send-midi-sysex-common out contents)))
 
 (defn decode-message 
-  "Decompose a ```com.sun.media.sound.FastShortMessage``` into a Launchpad-specific map.
+  "Decompose a [com.sun.media.sound.FastShortMessage](http://www.docjar.com/docs/api/com/sun/media/sound/FastShortMessage.html) into a Launchpad-specific map.
 
-  See http://www.docjar.com/docs/api/com/sun/media/sound/FastShortMessage.html.
+  Examples:
+
+  ```
+  (def lp-msg (decode-message raw-msg))
+  (println (:x lp-msg) (:y lp-msg))
+  (println (:button-up? lp-msg))
+  (println (:velocity lp-msg))
+  (= (:note lp-msg) (:getData1 raw-msg))
+  ```
   "
   [obj]
   (let [data1 (.getData1 obj)
