@@ -14,13 +14,17 @@
 (def ^:const CC_MIXER "Identifies the \"Mixer\" control button in messages sent to/from the Launchpad." 0x6F)
 
 (defn send-midi
-	"Sends a javax.sound.midi.ShortMessage to the specified device.
-	out should be the Launchpad receiving the message.
-	args should be a three element sequence containing the status, data1 and data2 components of the message respectively.
+	"Sends a ```javax.sound.midi.ShortMessage``` to the specified device.
+
+	* out should be the Launchpad receiving the message.
+	* args should be a three element sequence containing the status, data1 and data2 components of the message respectively.
+
 	See https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/ShortMessage.html#ShortMessage(int,%20int,%20int)
 
 	Examples:
+	```
 	(send-midi lpad 0x90 11 43)
+	```
 	"
 	[{:keys [out]} & args]
   (.send out
@@ -33,34 +37,43 @@
          -1))
 
 (defn send-midi-sysex
-	"Sends a javax.sound.midi.SysexMessage to the specified device.
-	out should be the Launchpad receiving the message.
-	args should be an arbitary length sequence which will be wrapped by Launchpad Sysex header and footer information and converted to a byte array.
+	"Sends a ```javax.sound.midi.SysexMessage``` to the specified device.
+
+	* out should be the Launchpad receiving the message.
+	* args should be an arbitary length sequence which will be wrapped by Launchpad Sysex header and footer information and converted to a byte array.
+
 	See https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html#setMessage(byte[],%20int)
 
 	Examples:
+	```
 	(send-midi-sysex lpad 13 4 43)
+	```
 	"
 	[{:keys [out]} & args]
   (let [contents (byte-array (concat SYSEX_HEADER args SYSEX_FOOTER))]
   	(send-midi-sysex-common out contents)))
 
 (defn send-midi-sysex-scroll
- 	"Sends a javax.sound.midi.SysexMessage to the specified device to produce scrolling text.
-	out should be the Launchpad receiving the message.
-	text should be the text to scroll.
-	args should be an arbitary length sequence which will be wrapped by Launchpad Sysex header, text and footer information and converted to a byte array.
+ 	"Sends a ```javax.sound.midi.SysexMessage``` to the specified device to produce scrolling text.
+	
+	* out should be the Launchpad receiving the message.
+	* text should be the text to scroll.
+	* args should be an arbitary length sequence which will be wrapped by Launchpad Sysex header, text and footer information and converted to a byte array.
+
 	See https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html#setMessage(byte[],%20int)
 
 	Examples:
+
+	```
 	(send-midi-sysex lpad (72 101 108 108 111) 20 45 0)
+	```
 	"
 	[{:keys [out]} text & args]
   (let [contents (byte-array (concat SYSEX_HEADER args text SYSEX_FOOTER))]
   	(send-midi-sysex-common out contents)))
 
 (defn decode-message 
-  "Decompose a com.sun.media.sound.FastShortMessage into a Launchpad-specific map.
+  "Decompose a ```com.sun.media.sound.FastShortMessage``` into a Launchpad-specific map.
 
   See http://www.docjar.com/docs/api/com/sun/media/sound/FastShortMessage.html.
   "

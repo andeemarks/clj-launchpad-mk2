@@ -7,7 +7,9 @@
   :deploy-repositories [["clojars"  {:url "https://clojars.org/repo" :creds :gpg}]]  
   :main demo
   :aot [demo]
-  :codox {:output-path "docs" :source-uri "https://github.com/andeemarks/clj-launchpad-mk2/blob/master/{filepath}#L{line}"}
+  :codox {:output-path "docs" 
+          :metadata {:doc/format :markdown} 
+          :source-uri "https://github.com/andeemarks/clj-launchpad-mk2/blob/master/{filepath}#L{line}"}
   :plugins
     [
       [lein-cljfmt "0.5.6"]]
