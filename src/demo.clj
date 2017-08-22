@@ -1,4 +1,5 @@
 (ns demo
+  (:gen-class)
   (:require [clj-launchpad-mk2 :refer :all]))
 
 (defn- wipe-left-to-right [lpad]
