@@ -1,10 +1,10 @@
-(defproject clj-launchpad-mk2 "0.1.1"
+(defproject clj-launchpad-mk2 "0.1.2"
   :description "Novation Launchpad MK2 library for clojure"
   :url "https://github.com/andeemarks/clj-launchpad-mk2"
   :license {:name "MIT"
             :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]]
-  :deploy-repositories [["clojars"  {:sign-releases false :url "https://clojars.org/repo"}]]  
+  :deploy-repositories [["clojars"  {:url "https://clojars.org/repo" :creds :gpg}]]  
   :main demo
   :plugins
     [
