@@ -1,4 +1,4 @@
-(ns demo
+(ns ^:no-doc demo
   (:gen-class)
   (:require [clj-launchpad-mk2 :refer :all]))
 
