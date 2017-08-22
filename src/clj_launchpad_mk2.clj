@@ -147,6 +147,13 @@
                         (handler-fn (midi/decode-message msg) timestamp))))]
     (.setReceiver (:in lpad) receiver)))
 
+(defn remove-button-press-handler 
+  [lpad]
+  (let [receiver  (proxy [Receiver] []
+                    (close [] nil)
+                    (send [msg timestamp]))]
+    (.setReceiver (:in lpad) receiver)))
+
 (defn close [lpad]
   "close the launchpad device"
   (dorun (map #(.close %) (vals lpad))))

@@ -41,7 +41,10 @@
   (fn [msg timestamp]
     ; (println msg)
     (if (:mixer-button? msg)
-      (close lpad)
+      (doto lpad
+        (remove-button-press-handler)
+        (clear-grid)
+        (close))
       (let [x (:x msg)
             y (:y msg)
             color (- 127 (+ x y))]

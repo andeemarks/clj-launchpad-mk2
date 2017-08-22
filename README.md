@@ -62,9 +62,11 @@ This library provides a Clojure interface to access the [Novation Launchpad MK2]
 (close lpad)				; disconnect
  ```
 
+You can also try ```lein run``` to run the examples in ```demo.clj```.
+
 ## To Do
 
-* Fix input handling
+* Fix midi error at end of demo.
 
 ## Copyright
 
