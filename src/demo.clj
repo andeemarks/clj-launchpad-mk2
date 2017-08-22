@@ -39,7 +39,7 @@
   (Thread/sleep 2000))
 
 (defn- handle-button-press [lpad]
-  (fn [msg timestamp]
+  (fn [msg]
     ; (println msg)
     (if (:mixer-button? msg)
       (doto lpad
