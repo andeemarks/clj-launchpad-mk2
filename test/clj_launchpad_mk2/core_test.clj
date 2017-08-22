@@ -137,11 +137,11 @@
 
 	(facts "about #light-cc"
 		(fact "valid x/y coordinates and color are mapped onto the MIDI message when being dispatched to midi/send-midi"
-			(light-cc lpad CC_CURSOR_UP 127) => nil
+			(light-cc lpad midi/CC_CURSOR_UP 127) => nil
 			(provided (midi/send-midi lpad CC_NOTE_ON 0x68 127) => nil)
-			(light-cc lpad CC_SESSION 13) => nil
+			(light-cc lpad midi/CC_SESSION 13) => nil
 			(provided (midi/send-midi lpad CC_NOTE_ON 0x6C 13) => nil) )
 		(fact "color must be within the range 0-127 inclusive"
-			(light-cc lpad CC_USER1 -1) => (throws javax.sound.midi.InvalidMidiDataException)
-			(light-cc lpad CC_USER2 128) => (throws javax.sound.midi.InvalidMidiDataException)))
+			(light-cc lpad midi/CC_USER1 -1) => (throws javax.sound.midi.InvalidMidiDataException)
+			(light-cc lpad midi/CC_USER2 128) => (throws javax.sound.midi.InvalidMidiDataException)))
 )
