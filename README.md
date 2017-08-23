@@ -30,6 +30,7 @@ This library provides a Clojure interface to access the [Novation Launchpad MK2]
 
 ```clojure
 (require '[clj-launchpad-mk2 :refer :all])
+(require '[midi.core :as midi])
 
 (def lpad (open))			; first argument to all subsequent calls
 
@@ -49,7 +50,7 @@ This library provides a Clojure interface to access the [Novation Launchpad MK2]
 (rgb lpad 0 2 32 0 0)
 (rgb lpad 0 3 48 0 0)
 (rgb lpad 0 4 63 0 0)
-(set-button-press-handler 		; "random" light pressed button
+(midi/set-button-press-handler 		; "random" light pressed button
 	lpad 		
 	(fn 
 		[msg]

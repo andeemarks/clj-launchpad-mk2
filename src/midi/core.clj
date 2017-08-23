@@ -155,3 +155,45 @@
 	   :data1 data1
 	   :data2 data2
 	   }))
+
+(defn set-button-press-handler 
+  "Specify a single handler that will receive all midi events from the input device.
+  
+  * the first argument should be a map containing an `in` key which returns a [javax.sound.midi.Transmitter](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Transmitter.html).
+  * handler should be a function that accepts a single parameter - a decoded version of the event.
+
+  Examples:
+  ```
+  (set-button-press-handler
+    lpad    
+    (fn [msg]
+      (light-cell 
+        lpad 
+        (:x msg) 
+        (:y msg) 
+        (- 127 (+ (:x msg) (:y msg))))))
+  ```
+  "
+  [{:keys [in]} handler-fn]
+  (let [receiver  (proxy [Receiver] []
+                    (close [] nil)
+                    (send [msg timestamp] 
+                      (if (= (type msg) com.sun.media.sound.FastShortMessage)
+                        (handler-fn (decode-message msg)))))]
+    (.setReceiver in receiver)))
+
+(defn remove-button-press-handler 
+  "Remove any event handlers.
+
+  * the first argument should be a map containing an `in` key which returns a [javax.sound.midi.Transmitter](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Transmitter.html).
+
+  Examples:
+  ```
+  (remove-button-press-handler lpad)
+  ```
+  "
+  [{:keys [in]}]
+  (let [receiver  (proxy [Receiver] []
+                    (close [] nil)
+                    (send [msg timestamp]))]
+    (.setReceiver in receiver)))

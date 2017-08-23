@@ -1,6 +1,7 @@
 (ns ^:no-doc demo
   (:gen-class)
-  (:require [clj-launchpad-mk2 :refer :all]))
+  (:require [clj-launchpad-mk2 :refer :all]
+            [midi.core :as midi]))
 
 (defn- wipe-left-to-right [lpad]
   (doseq [x (range 0 8)]
@@ -43,7 +44,7 @@
     ; (println msg)
     (if (:mixer-button? msg)
       (doto lpad
-        (remove-button-press-handler)
+        (midi/remove-button-press-handler)
         (clear-grid)
         (close))
       (let [x (:x msg)
@@ -54,7 +55,7 @@
 (defn- light-pressed-button [lpad]
   (scroll-text-once lpad "Touch me!" 54)
 
-  (set-button-press-handler lpad (handle-button-press lpad)))
+  (midi/set-button-press-handler lpad (handle-button-press lpad)))
 
 (defn -main [& args]
   (let [lpad (open)]
