@@ -223,27 +223,9 @@
   (midi/send-midi-sysex lpad midi/SYSEX_LIGHT_GRID_STATUS 0))
 
 (defn open
-  ([]
-   "find the launchpad name \"MK2 [hw:2,0,0]\" in the available midi devices and return a launchpad object suitable for the calls of this library"
-   (open "MK2 [hw:2,0,0]"))
-  ([name]
-   "find the launchpad by name in the available midi devices and return a launchpad object suitable for the calls of this library"
-   (let [[in-device out-device]
-         (sort-by #(.getMaxTransmitters % )
-                  (map #(MidiSystem/getMidiDevice %)
-                       (filter #(= name (.getName %)) (MidiSystem/getMidiDeviceInfo))))
-         out (.getReceiver out-device)
-         in (.getTransmitter in-device)
-         lpad {:in-device in-device
-               :out-device out-device
-               :in in
-               :out out}]
-     (do
-       (.open out-device)
-       (.open in-device)
-       (Thread/sleep 100)
-       (clear-grid lpad))
-     lpad)))
+  []
+  "open a connection to the launchpad named \"MK2 [hw:2,0,0]\" and return a launchpad object suitable for the calls of this library"
+  (midi/open "MK2 [hw:2,0,0]"))
 
 (defn set-button-press-handler 
   "Specify a single handler that will receive all midi events from the input device.

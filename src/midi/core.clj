@@ -25,6 +25,33 @@
 (def ^:const CC_USER2 "Identifies the \"User 2\" control button in messages sent to/from the Launchpad." 0x6E)
 (def ^:const CC_MIXER "Identifies the \"Mixer\" control button in messages sent to/from the Launchpad." 0x6F)
 
+(defn open
+  "find the launchpad by name in the available midi devices and return a launchpad object suitable for the calls of this library
+
+  * `name` should be the string returned from [MidiSystem/getMidiDeviceInfo](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/MidiSystem.html)
+
+  Examples:
+  ```
+  (open \"MK2 [hw:2,0,0]\")
+  ```
+  "
+  [name]
+	(let [[in-device out-device]
+	     (sort-by #(.getMaxTransmitters % )
+	              (map #(MidiSystem/getMidiDevice %)
+	                   (filter #(= name (.getName %)) (MidiSystem/getMidiDeviceInfo))))
+	     out (.getReceiver out-device)
+	     in (.getTransmitter in-device)
+	     lpad {:in-device in-device
+	           :out-device out-device
+	           :in in
+	           :out out}]
+	 	(do
+	   	(.open out-device)
+	   	(.open in-device)
+	   	(Thread/sleep 100))
+	 	lpad))
+
 (defn send-midi
 	"Sends a [javax.sound.midi.ShortMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/ShortMessage.html) to the specified device.
 
