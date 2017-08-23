@@ -223,8 +223,11 @@
   (midi/send-midi-sysex lpad midi/SYSEX_LIGHT_GRID_STATUS 0))
 
 (defn open
+  "open a connection to the launchpad named \"MK2 [hw:2,0,0]\" and return a launchpad object suitable for the calls of this library.
+
+  See [[midi.core/open]].
+  "
   []
-  "open a connection to the launchpad named \"MK2 [hw:2,0,0]\" and return a launchpad object suitable for the calls of this library"
   (midi/open "MK2 [hw:2,0,0]"))
 
 (defn set-button-press-handler 
@@ -269,12 +272,15 @@
                     (send [msg timestamp]))]
     (.setReceiver in receiver)))
 
-(defn close [lpad]
+(defn close 
   "close the launchpad device.
+
+  See [[midi.core/close]].
 
   Examples:
   ```
   (close lpad)
   ```
   "
-  (dorun (map #(.close %) (vals lpad))))
+  [lpad]
+  (midi/close lpad))

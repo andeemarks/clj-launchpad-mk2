@@ -52,6 +52,17 @@
 	   	(Thread/sleep 100))
 	 	lpad))
 
+(defn close 
+  "close the launchpad device.
+
+  Examples:
+  ```
+  (close lpad)
+  ```
+  "
+	[lpad]
+  (dorun (map #(.close %) (vals lpad))))
+
 (defn send-midi
 	"Sends a [javax.sound.midi.ShortMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/ShortMessage.html) to the specified device.
 
