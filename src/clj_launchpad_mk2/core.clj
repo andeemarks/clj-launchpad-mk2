@@ -1,5 +1,5 @@
-(ns clj-launchpad-mk2
-  (:require [midi.core :as midi]))
+(ns clj-launchpad-mk2.core
+  (:require [clj-launchpad-mk2.midi.core :as midi]))
 
 (defn- validate-coordinates [x y]
   (if (or (> x 7) (< x 0))

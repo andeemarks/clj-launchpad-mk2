@@ -1,7 +1,7 @@
-(ns ^:no-doc demo
+(ns ^:no-doc clj-launchpad-mk2.demo
   (:gen-class)
-  (:require [clj-launchpad-mk2 :refer :all]
-            [midi.core :as midi]))
+  (:require [clj-launchpad-mk2.core :refer :all]
+            [clj-launchpad-mk2.midi.core :as midi]))
 
 (defn- wipe-left-to-right [lpad]
   (doseq [x (range 0 8)]

@@ -1,6 +1,6 @@
 (ns clj-launchpad-mk2.midi.core-test
   (:use midje.sweet) 
-  (:require [midi.core :refer :all]))
+  (:require [clj-launchpad-mk2.midi.core :refer :all]))
 
 (defn- message-from [& args]
 	(decode-message (javax.sound.midi.ShortMessage. (first args) (second args) (nth args 2) (last args))))

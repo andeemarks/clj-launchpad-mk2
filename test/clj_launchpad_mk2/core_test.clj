@@ -1,7 +1,7 @@
 (ns clj-launchpad-mk2.core-test
   (:use midje.sweet) 
-  (:require [midi.core :as midi])
-  (:require [clj-launchpad-mk2 :refer :all]))
+  (:require [clj-launchpad-mk2.midi.core :as midi])
+  (:require [clj-launchpad-mk2.core :refer :all]))
 
 (def lpad "stub-launchpad")
 

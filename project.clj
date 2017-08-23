@@ -5,8 +5,8 @@
             :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]]
   :deploy-repositories [["clojars"  {:url "https://clojars.org/repo" :creds :gpg}]]  
-  :main demo
-  :aot [demo]
+  :main clj-launchpad-mk2.demo
+  :aot [clj-launchpad-mk2.demo]
   :codox {:output-path "docs" 
           :metadata {:doc/format :markdown} 
           :source-uri "https://github.com/andeemarks/clj-launchpad-mk2/blob/master/{filepath}#L{line}"}

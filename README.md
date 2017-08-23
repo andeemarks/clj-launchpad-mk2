@@ -29,8 +29,8 @@ This library provides a Clojure interface to access the [Novation Launchpad MK2]
 ## REPL Usage
 
 ```clojure
-(require '[clj-launchpad-mk2 :refer :all])
-(require '[midi.core :as midi])
+(require '[clj-launchpad-mk2.core :refer :all])
+(require '[clj-launchpad-mk2.midi.core :as midi])
 
 (def lpad (open))			; first argument to all subsequent calls
 

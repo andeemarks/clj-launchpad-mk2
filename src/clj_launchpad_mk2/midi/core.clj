@@ -1,4 +1,4 @@
-(ns midi.core
+(ns clj-launchpad-mk2.midi.core
 	"Holds the functions which 'talk MIDI' to the Launchpad via messages in the ```javax.sound.midi``` package."
   (:import [javax.sound.midi MidiSystem Receiver ShortMessage SysexMessage]))
 
