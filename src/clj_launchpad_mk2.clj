@@ -3,14 +3,14 @@
 
 (defn- validate-coordinates [x y]
   (if (or (> x 7) (< x 0))
-    (throw (javax.sound.midi.InvalidMidiDataException. "x must be in range 0-7 inclusive")))
+    (throw (IllegalArgumentException. "x must be in range 0-7 inclusive")))
 
   (if (or (> y 7) (< y 0))
-    (throw (javax.sound.midi.InvalidMidiDataException. "y must be in range 0-7 inclusive"))))
+    (throw (IllegalArgumentException. "y must be in range 0-7 inclusive"))))
 
 (defn- validate-rgb-component [component]
   (if (or (> component 63) (< component 0))
-    (throw (javax.sound.midi.InvalidMidiDataException. "RGB components must be in range 0-63 inclusive"))))
+    (throw (IllegalArgumentException. "RGB components must be in range 0-63 inclusive"))))
 
 (defn- validate-rgb [red green blue]
   (validate-rgb-component red)
@@ -19,7 +19,7 @@
 
 (defn- validate-color [color]
   (if (or (> color 127) (< color 0))
-    (throw (javax.sound.midi.InvalidMidiDataException. "color must be in range 0-127 inclusive"))))
+    (throw (IllegalArgumentException. "color must be in range 0-127 inclusive"))))
 
 (defn- coordinate-pair-to-index [x y] (+ (+ x 1) (* 10 (+ y 1))))
 
@@ -36,9 +36,10 @@
   (light-cell lpad 1 2 0)
   ```
   "
-  [lpad x y & color-description]
+  [lpad x y color-description]
   (validate-coordinates x y)
-  (midi/send-midi lpad midi/CHANNEL_1_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
+  (validate-color color-description)
+  (midi/send-midi lpad midi/CHANNEL_1_NOTE_ON (coordinate-pair-to-index x y) color-description))
 
 (defn- scroll-text-common
   [lpad text color-description loop-flag]
@@ -175,8 +176,9 @@
   (light-cc lpad CC_CURSOR_RIGHT 78)
   ```
   "
-  [lpad cc-ref & color-description]
-  (midi/send-midi lpad midi/CC_NOTE_ON cc-ref (first color-description)))
+  [lpad cc-ref color-description]
+  (validate-color color-description)
+  (midi/send-midi lpad midi/CC_NOTE_ON cc-ref color-description))
 
 (defn flash
   "flash the specified button between the current color and specified color
@@ -191,9 +193,10 @@
   (flash lpad 1 2 0)
   ```
   "
-  [lpad x y & color-description]
+  [lpad x y color-description]
   (validate-coordinates x y)
-  (midi/send-midi lpad midi/CHANNEL_2_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
+  (validate-color color-description)
+  (midi/send-midi lpad midi/CHANNEL_2_NOTE_ON (coordinate-pair-to-index x y) color-description))
 
 (defn pulse
   "pulse (i.e., vary the brightness) the specified button from off to the specified color
@@ -207,9 +210,10 @@
   (pulse lpad 1 2 127)
   ```
   "
-  [lpad x y & color-description]
+  [lpad x y color-description]
   (validate-coordinates x y)
-  (midi/send-midi lpad midi/CHANNEL_3_NOTE_ON (coordinate-pair-to-index x y) (first color-description)))
+  (validate-color color-description)
+  (midi/send-midi lpad midi/CHANNEL_3_NOTE_ON (coordinate-pair-to-index x y) color-description))
 
 (defn clear-grid [lpad]
   "Turn off all the grid buttons.
