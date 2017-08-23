@@ -9,21 +9,21 @@
 (= (:note lp-msg) (:getData1 raw-msg))
 </code></pre></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/midi/core.clj#L81">view source</a></div></div><div class="public anchor" id="var-send-midi"><h3>send-midi</h3><div class="usage"><code>(send-midi {:keys [out]} &amp; args)</code></div><div class="doc"><div class="markdown"><p>Sends a <a href="https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/ShortMessage.html">javax.sound.midi.ShortMessage</a> to the specified device.</p>
 <ul>
-  <li><code>out</code> should be the Launchpad receiving the message.</li>
+  <li>the first argument should be a map containing an <code>out</code> key which returns a <a href="https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Receiver.html">javax.sound.midi.Receiver</a>.</li>
   <li><code>args</code> should be a three element sequence containing the <code>status</code>, <code>data1</code> and <code>data2</code> components of the message respectively.</li>
 </ul>
 <p>Examples:</p>
 <pre><code>(send-midi lpad 0x90 11 43)
 </code></pre></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/midi/core.clj#L28">view source</a></div></div><div class="public anchor" id="var-send-midi-sysex"><h3>send-midi-sysex</h3><div class="usage"><code>(send-midi-sysex {:keys [out]} &amp; args)</code></div><div class="doc"><div class="markdown"><p>Sends a <a href="https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html">javax.sound.midi.SysexMessage</a> to the specified device.</p>
 <ul>
-  <li><code>out</code> should be the Launchpad receiving the message.</li>
+  <li>the first argument should be a map containing an <code>out</code> key which returns a <a href="https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Receiver.html">javax.sound.midi.Receiver</a>.</li>
   <li><code>args</code> should be an arbitary length sequence which will be wrapped by <a href="midi.core.html#var-SYSEX_HEADER">SYSEX_HEADER</a> and <a href="midi.core.html#var-SYSEX_FOOTER">SYSEX_FOOTER</a> information and converted to a byte array.</li>
 </ul>
 <p>Examples:</p>
 <pre><code>(send-midi-sysex lpad 13 4 43)
 </code></pre></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/midi/core.clj#L49">view source</a></div></div><div class="public anchor" id="var-send-midi-sysex-scroll"><h3>send-midi-sysex-scroll</h3><div class="usage"><code>(send-midi-sysex-scroll {:keys [out]} text &amp; args)</code></div><div class="doc"><div class="markdown"><p>Sends a <a href="https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html">javax.sound.midi.SysexMessage</a> to the specified device to produce scrolling text.</p>
 <ul>
-  <li><code>out</code> should be the Launchpad receiving the message.</li>
+  <li>the first argument should be a map containing an <code>out</code> key which returns a <a href="https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Receiver.html">javax.sound.midi.Receiver</a>.</li>
   <li><code>text</code> should be a sequence of integers representing the letters of the text to scroll (e.g., <code>(map #(int (char %)) "Hello")</code>.</li>
   <li><code>args</code> should be an arbitary length sequence which will be wrapped by <a href="midi.core.html#var-SYSEX_HEADER">SYSEX_HEADER</a>, text and <a href="midi.core.html#var-SYSEX_FOOTER">SYSEX_FOOTER</a> information and converted to a byte array.</li>
 </ul>

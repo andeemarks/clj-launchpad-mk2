@@ -7,7 +7,7 @@
 </ul>
 <p>Examples:</p>
 <pre><code>(clear-cell lpad 0 2)
-</code></pre></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/clj_launchpad_mk2.clj#L153">view source</a></div></div><div class="public anchor" id="var-clear-grid"><h3>clear-grid</h3><div class="usage"><code>(clear-grid lpad)</code></div><div class="doc"><div class="markdown"></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/clj_launchpad_mk2.clj#L215">view source</a></div></div><div class="public anchor" id="var-close"><h3>close</h3><div class="usage"><code>(close lpad)</code></div><div class="doc"><div class="markdown"></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/clj_launchpad_mk2.clj#L287">view source</a></div></div><div class="public anchor" id="var-flash"><h3>flash</h3><div class="usage"><code>(flash lpad x y &amp; color-description)</code></div><div class="doc"><div class="markdown"><p>flash the specified button between the current color and specified color</p>
+</code></pre></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/clj_launchpad_mk2.clj#L153">view source</a></div></div><div class="public anchor" id="var-clear-grid"><h3>clear-grid</h3><div class="usage"><code>(clear-grid lpad)</code></div><div class="doc"><div class="markdown"></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/clj_launchpad_mk2.clj#L215">view source</a></div></div><div class="public anchor" id="var-close"><h3>close</h3><div class="usage"><code>(close lpad)</code></div><div class="doc"><div class="markdown"></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/clj_launchpad_mk2.clj#L290">view source</a></div></div><div class="public anchor" id="var-flash"><h3>flash</h3><div class="usage"><code>(flash lpad x y &amp; color-description)</code></div><div class="doc"><div class="markdown"><p>flash the specified button between the current color and specified color</p>
 <ul>
   <li>x can be 0 to 8 inclusive (8 is for the top buttons)</li>
   <li>y can be 0 to 8 inclusive (8 is for the most right buttons)</li>
@@ -60,10 +60,13 @@
 </ul>
 <p>Examples:</p>
 <pre><code>(pulse lpad 1 2 127)
-</code></pre></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/clj_launchpad_mk2.clj#L199">view source</a></div></div><div class="public anchor" id="var-remove-button-press-handler"><h3>remove-button-press-handler</h3><div class="usage"><code>(remove-button-press-handler lpad)</code></div><div class="doc"><div class="markdown"><p>Remove any event handlers.</p>
+</code></pre></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/clj_launchpad_mk2.clj#L199">view source</a></div></div><div class="public anchor" id="var-remove-button-press-handler"><h3>remove-button-press-handler</h3><div class="usage"><code>(remove-button-press-handler {:keys [in]})</code></div><div class="doc"><div class="markdown"><p>Remove any event handlers.</p>
+<ul>
+  <li>the first argument should be a map containing an <code>in</code> key which returns a <a href="https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Transmitter.html">javax.sound.midi.Transmitter</a>.</li>
+</ul>
 <p>Examples:</p>
 <pre><code>(remove-button-press-handler lpad)
-</code></pre></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/clj_launchpad_mk2.clj#L273">view source</a></div></div><div class="public anchor" id="var-rgb"><h3>rgb</h3><div class="usage"><code>(rgb lpad x y red green blue)</code></div><div class="doc"><div class="markdown"><p>Set the specified buttons to the specified combination of red, green and blue.</p>
+</code></pre></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/clj_launchpad_mk2.clj#L274">view source</a></div></div><div class="public anchor" id="var-rgb"><h3>rgb</h3><div class="usage"><code>(rgb lpad x y red green blue)</code></div><div class="doc"><div class="markdown"><p>Set the specified buttons to the specified combination of red, green and blue.</p>
 <ul>
   <li>x can be 0 to 8 inclusive (8 is for the most right buttons)</li>
   <li>y can be 0 to 8 inclusive (8 is for the most right buttons)</li>
@@ -90,8 +93,9 @@
 </ul>
 <p>Examples:</p>
 <pre><code>(scroll-text-once lpad "Hello, world!" 54)
-</code></pre></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/clj_launchpad_mk2.clj#L50">view source</a></div></div><div class="public anchor" id="var-set-button-press-handler"><h3>set-button-press-handler</h3><div class="usage"><code>(set-button-press-handler lpad handler-fn)</code></div><div class="doc"><div class="markdown"><p>Specify a single handler that will receive all midi events from the input device.</p>
+</code></pre></div></div><div class="src-link"><a href="https://github.com/andeemarks/clj-launchpad-mk2/blob/master/src/clj_launchpad_mk2.clj#L50">view source</a></div></div><div class="public anchor" id="var-set-button-press-handler"><h3>set-button-press-handler</h3><div class="usage"><code>(set-button-press-handler {:keys [in]} handler-fn)</code></div><div class="doc"><div class="markdown"><p>Specify a single handler that will receive all midi events from the input device.</p>
 <ul>
+  <li>the first argument should be a map containing an <code>in</code> key which returns a <a href="https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Transmitter.html">javax.sound.midi.Transmitter</a>.</li>
   <li>handler should be a function that accepts a single parameter - a decoded version of the event.</li>
 </ul>
 <p>Examples:</p>

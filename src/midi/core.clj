@@ -28,7 +28,7 @@
 (defn send-midi
 	"Sends a [javax.sound.midi.ShortMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/ShortMessage.html) to the specified device.
 
-	* `out` should be the Launchpad receiving the message.
+	* the first argument should be a map containing an `out` key which returns a [javax.sound.midi.Receiver](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Receiver.html).
 	* `args` should be a three element sequence containing the `status`, `data1` and `data2` components of the message respectively.
 
 	Examples:
@@ -49,7 +49,7 @@
 (defn send-midi-sysex
 	"Sends a [javax.sound.midi.SysexMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html) to the specified device.
 
-	* `out` should be the Launchpad receiving the message.
+	* the first argument should be a map containing an `out` key which returns a [javax.sound.midi.Receiver](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Receiver.html).
 	* `args` should be an arbitary length sequence which will be wrapped by [[SYSEX_HEADER]] and [[SYSEX_FOOTER]] information and converted to a byte array.
 
 	Examples:
@@ -64,7 +64,7 @@
 (defn send-midi-sysex-scroll
  	"Sends a [javax.sound.midi.SysexMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html) to the specified device to produce scrolling text.
 	
-	* `out` should be the Launchpad receiving the message.
+	* the first argument should be a map containing an `out` key which returns a [javax.sound.midi.Receiver](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Receiver.html).
 	* `text` should be a sequence of integers representing the letters of the text to scroll (e.g., `(map #(int (char %)) \"Hello\")`.
 	* `args` should be an arbitary length sequence which will be wrapped by [[SYSEX_HEADER]], text and [[SYSEX_FOOTER]] information and converted to a byte array.
 
