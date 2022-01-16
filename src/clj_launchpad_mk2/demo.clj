@@ -1,5 +1,6 @@
 (ns ^:no-doc clj-launchpad-mk2.demo
   (:gen-class)
+  #_{:clj-kondo/ignore [:refer-all]}
   (:require [clj-launchpad-mk2.core :refer :all]
             [clj-launchpad-mk2.midi.core :as midi]))
 
