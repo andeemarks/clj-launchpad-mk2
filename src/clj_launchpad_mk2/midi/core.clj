@@ -1,6 +1,7 @@
 (ns clj-launchpad-mk2.midi.core
-	"Holds the functions which 'talk MIDI' to the Launchpad via messages in the ```javax.sound.midi``` package."
-  (:import [javax.sound.midi MidiSystem Receiver ShortMessage SysexMessage]))
+  "Holds the functions which 'talk MIDI' to the Launchpad via messages in the ```javax.sound.midi``` package."
+  (:import [javax.sound.midi MidiSystem Receiver ShortMessage SysexMessage])
+  (:require [clojure.string :as string]))
 
 (def ^:const ^:no-doc CHANNEL_1_NOTE_ON 0x90)
 (def ^:const ^:no-doc CHANNEL_2_NOTE_ON 0x91)
@@ -17,9 +18,9 @@
 (def ^:const SYSEX_FOOTER "The common set of footer bytes sent with each Sysex message" [247])
 
 (def ^:const CC_CURSOR_UP "Identifies the cursor up control button in messages sent to/from the Launchpad." 0x68)
-(def ^:const CC_CURSOR_DOWN "Identifies the cursor down control button in messages sent to/from the Launchpad."0x69)
+(def ^:const CC_CURSOR_DOWN "Identifies the cursor down control button in messages sent to/from the Launchpad." 0x69)
 (def ^:const CC_CURSOR_LEFT "Identifies the cursor left control button in messages sent to/from the Launchpad." 0x6A)
-(def ^:const CC_CURSOR_RIGHT "Identifies the cursor right control button in messages sent to/from the Launchpad."0x6B)
+(def ^:const CC_CURSOR_RIGHT "Identifies the cursor right control button in messages sent to/from the Launchpad." 0x6B)
 (def ^:const CC_SESSION "Identifies the \"Session\" control button in messages sent to/from the Launchpad." 0x6C)
 (def ^:const CC_USER1 "Identifies the \"User 1\" control button in messages sent to/from the Launchpad." 0x6D)
 (def ^:const CC_USER2 "Identifies the \"User 2\" control button in messages sent to/from the Launchpad." 0x6E)
@@ -32,27 +33,27 @@
 
   Examples:
   ```
-  (open \"MK2 [hw:2,0,0]\")
+  (open)
   ```
   "
-  [name]
-	(let [[in-device out-device]
-	     (sort-by #(.getMaxTransmitters % )
-	              (map #(MidiSystem/getMidiDevice %)
-	                   (filter #(= name (.getName %)) (MidiSystem/getMidiDeviceInfo))))
-	     out (.getReceiver out-device)
-	     in (.getTransmitter in-device)
-	     lpad {:in-device in-device
-	           :out-device out-device
-	           :in in
-	           :out out}]
-	 	(do
-	   	(.open out-device)
-	   	(.open in-device)
-	   	(Thread/sleep 100))
-	 	lpad))
+  []
+  (let [[in-device out-device]
+        (sort-by #(.getMaxTransmitters %)
+                 (map #(MidiSystem/getMidiDevice %)
+                      (filter #(string/includes? (.getDescription %) "Launchpad") (MidiSystem/getMidiDeviceInfo))))
+        out (.getReceiver out-device)
+        in (.getTransmitter in-device)
+        lpad {:in-device in-device
+              :out-device out-device
+              :in in
+              :out out}]
+    (do
+      (.open out-device)
+      (.open in-device)
+      (Thread/sleep 100))
+    lpad))
 
-(defn close 
+(defn close
   "close the launchpad device.
 
   Examples:
@@ -60,11 +61,11 @@
   (close lpad)
   ```
   "
-	[lpad]
+  [lpad]
   (dorun (map #(.close %) (vals lpad))))
 
 (defn send-midi
-	"Sends a [javax.sound.midi.ShortMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/ShortMessage.html) to the specified device.
+  "Sends a [javax.sound.midi.ShortMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/ShortMessage.html) to the specified device.
 
 	* the first argument should be a map containing an `out` key which returns a [javax.sound.midi.Receiver](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Receiver.html).
 	* `args` should be a three element sequence containing the `status`, `data1` and `data2` components of the message respectively.
@@ -74,7 +75,7 @@
 	(send-midi lpad 0x90 11 43)
 	```
 	"
-	[{:keys [out]} & args]
+  [{:keys [out]} & args]
   (.send out
          (doto (ShortMessage.) (.setMessage (nth args 0) (nth args 1) (nth args 2)))
          -1))
@@ -85,7 +86,7 @@
          -1))
 
 (defn send-midi-sysex
-	"Sends a [javax.sound.midi.SysexMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html) to the specified device.
+  "Sends a [javax.sound.midi.SysexMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html) to the specified device.
 
 	* the first argument should be a map containing an `out` key which returns a [javax.sound.midi.Receiver](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Receiver.html).
 	* `args` should be an arbitary length sequence which will be wrapped by [[SYSEX_HEADER]] and [[SYSEX_FOOTER]] information and converted to a byte array.
@@ -95,12 +96,12 @@
 	(send-midi-sysex lpad 13 4 43)
 	```
 	"
-	[{:keys [out]} & args]
+  [{:keys [out]} & args]
   (let [contents (byte-array (concat SYSEX_HEADER args SYSEX_FOOTER))]
-  	(send-midi-sysex-common out contents)))
+    (send-midi-sysex-common out contents)))
 
 (defn send-midi-sysex-scroll
- 	"Sends a [javax.sound.midi.SysexMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html) to the specified device to produce scrolling text.
+  "Sends a [javax.sound.midi.SysexMessage](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/SysexMessage.html) to the specified device to produce scrolling text.
 	
 	* the first argument should be a map containing an `out` key which returns a [javax.sound.midi.Receiver](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Receiver.html).
 	* `text` should be a sequence of integers representing the letters of the text to scroll (e.g., `(map #(int (char %)) \"Hello\")`.
@@ -112,11 +113,11 @@
 	(send-midi-sysex-scroll lpad (72 101 108 108 111) 20 45 0)
 	```
 	"
-	[{:keys [out]} text & args]
+  [{:keys [out]} text & args]
   (let [contents (byte-array (concat SYSEX_HEADER args text SYSEX_FOOTER))]
-  	(send-midi-sysex-common out contents)))
+    (send-midi-sysex-common out contents)))
 
-(defn decode-message 
+(defn decode-message
   "Decompose a [com.sun.media.sound.FastShortMessage](http://www.docjar.com/docs/api/com/sun/media/sound/FastShortMessage.html) into a Launchpad-specific map.
 
   Examples:
@@ -131,32 +132,31 @@
   "
   [obj]
   (let [data1 (.getData1 obj)
-  			data2 (.getData2 obj)
-  			x (- (rem data1 10) 1)
-  			y (- (quot data1 10) 1)]
-	  {:channel (.getChannel obj)
-	   :command  (.getCommand obj)
-	   :note data1
-	   :x x
-	   :y y
-	   :velocity  data2
-	   :button-down? (= 127 data2)
-	   :button-up? (= 0 data2)
-	   :control-button? (<= 104 data1 111)
-	   :scene-button? (and (= x 8) (<= 0 y 7))
-	   :cursor-up-button? (= data1 CC_CURSOR_UP)
-	   :cursor-down-button? (= data1 CC_CURSOR_DOWN)
-	   :cursor-left-button? (= data1 CC_CURSOR_LEFT)
-	   :cursor-right-button? (= data1 CC_CURSOR_RIGHT)
-	   :session-button? (= data1 CC_SESSION)
-	   :user-1-button? (= data1 CC_USER1)
-	   :user-2-button? (= data1 CC_USER2)
-	   :mixer-button? (= data1 CC_MIXER)
-	   :data1 data1
-	   :data2 data2
-	   }))
+        data2 (.getData2 obj)
+        x (- (rem data1 10) 1)
+        y (- (quot data1 10) 1)]
+    {:channel (.getChannel obj)
+     :command  (.getCommand obj)
+     :note data1
+     :x x
+     :y y
+     :velocity  data2
+     :button-down? (= 127 data2)
+     :button-up? (= 0 data2)
+     :control-button? (<= 104 data1 111)
+     :scene-button? (and (= x 8) (<= 0 y 7))
+     :cursor-up-button? (= data1 CC_CURSOR_UP)
+     :cursor-down-button? (= data1 CC_CURSOR_DOWN)
+     :cursor-left-button? (= data1 CC_CURSOR_LEFT)
+     :cursor-right-button? (= data1 CC_CURSOR_RIGHT)
+     :session-button? (= data1 CC_SESSION)
+     :user-1-button? (= data1 CC_USER1)
+     :user-2-button? (= data1 CC_USER2)
+     :mixer-button? (= data1 CC_MIXER)
+     :data1 data1
+     :data2 data2}))
 
-(defn set-button-press-handler 
+(defn set-button-press-handler
   "Specify a single handler that will receive all midi events from the input device.
   
   * the first argument should be a map containing an `in` key which returns a [javax.sound.midi.Transmitter](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Transmitter.html).
@@ -177,12 +177,12 @@
   [{:keys [in]} handler-fn]
   (let [receiver  (proxy [Receiver] []
                     (close [] nil)
-                    (send [msg timestamp] 
+                    (send [msg timestamp]
                       (if (= (type msg) com.sun.media.sound.FastShortMessage)
                         (handler-fn (decode-message msg)))))]
     (.setReceiver in receiver)))
 
-(defn remove-button-press-handler 
+(defn remove-button-press-handler
   "Remove any event handlers.
 
   * the first argument should be a map containing an `in` key which returns a [javax.sound.midi.Transmitter](https://docs.oracle.com/javase/7/docs/api/javax/sound/midi/Transmitter.html).

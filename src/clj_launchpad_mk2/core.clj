@@ -226,12 +226,12 @@
   (midi/send-midi-sysex lpad midi/SYSEX_LIGHT_GRID_STATUS 0))
 
 (defn open
-  "open a connection to the launchpad named \"MK2 [hw:4,0,0]\" and return a launchpad object suitable for the calls of this library.
+  "open a connection to the launchpad and return a launchpad object suitable for the calls of this library.
 
   See [[midi.core/open]].
   "
   []
-  (midi/open "MK2 [hw:4,0,0]"))
+  (midi/open))
 
 (defn close
   "close the launchpad device.
