@@ -5,14 +5,14 @@
 
 (defn- wipe-left-to-right [lpad]
   (doseq [x (range 0 8)]
-  (light-column lpad x 66)
-  (Thread/sleep 200)
-  (light-column lpad x 0)))
+    (light-column lpad x 66)
+    (Thread/sleep 200)
+    (light-column lpad x 0)))
 
 (defn- wipe-top-to-bottom [lpad]
   (doseq [y (range 0 8)]
-  (light-row lpad y 66)
-  (Thread/sleep 200)))
+    (light-row lpad y 66)
+    (Thread/sleep 200)))
 
 (defn- flash-border [lpad]
   (doseq [y (range 0 8)
@@ -60,12 +60,12 @@
 (defn -main [& args]
   (let [lpad (open)]
     (doto lpad
-      (clear-grid)       
+      (clear-grid)
       (wipe-left-to-right)
       (wipe-top-to-bottom)
       (flash-border)
       (pulse-middle)
-      (clear-grid)       
+      (clear-grid)
       (brightness-quadrants)
-      (clear-grid)       
+      (clear-grid)
       (light-pressed-button))))
