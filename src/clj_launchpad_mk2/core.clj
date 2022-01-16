@@ -231,7 +231,7 @@
   See [[midi.core/open]].
   "
   []
-  (midi/open "MK2 [hw:2,0,0]"))
+  (midi/open "MK2 [hw:4,0,0]"))
 
 (defn close 
   "close the launchpad device.

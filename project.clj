@@ -3,7 +3,7 @@
   :url "https://github.com/andeemarks/clj-launchpad-mk2"
   :license {:name "MIT"
             :url "https://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.8.0"]]
+  :dependencies [[org.clojure/clojure "1.10.3"]]
   :deploy-repositories [["clojars"  {:url "https://clojars.org/repo" :creds :gpg}]]  
   :main clj-launchpad-mk2.demo
   :aot [clj-launchpad-mk2.demo]
@@ -18,7 +18,7 @@
   		{	:plugins [[lein-midje "3.2.1"]]
   			:dependencies 
   			[
-          [com.jakemccrary/lein-test-refresh "0.20.0"]
+          [com.jakemccrary/lein-test-refresh "0.25.0"]
           [clansi "1.0.0"]
-          [com.taoensso/timbre "4.10.0"]
-  				[midje "1.8.3" :exclusions [org.clojure/clojure]]]}})  
+          [com.taoensso/timbre "5.1.2"]
+  				[midje "1.10.5" :exclusions [org.clojure/clojure]]]}})  
