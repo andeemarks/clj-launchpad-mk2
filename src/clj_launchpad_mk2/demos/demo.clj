@@ -1,4 +1,4 @@
-(ns ^:no-doc clj-launchpad-mk2.demo
+(ns ^:no-doc clj-launchpad-mk2.demos.demo
   (:gen-class)
   #_{:clj-kondo/ignore [:refer-all]}
   (:require [clj-launchpad-mk2.core :refer :all]
