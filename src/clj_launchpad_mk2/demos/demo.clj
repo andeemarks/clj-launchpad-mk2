@@ -42,7 +42,6 @@
 
 (defn- handle-button-press [lpad]
   (fn [msg]
-    ; (println msg)
     (if (:mixer-button? msg)
       (doto lpad
         (midi/remove-button-press-handler)
@@ -58,6 +57,7 @@
 
   (midi/set-button-press-handler lpad (handle-button-press lpad)))
 
+#_{:clj-kondo/ignore [:unused-binding]}
 (defn -main [& args]
   (let [lpad (open)]
     (doto lpad

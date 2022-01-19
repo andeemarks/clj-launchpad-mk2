@@ -2,14 +2,14 @@
   (:require [clj-launchpad-mk2.midi.core :as midi]))
 
 (defn- validate-coordinates [x y]
-  (if (or (> x 7) (< x 0))
+  (when (or (> x 7) (< x 0))
     (throw (IllegalArgumentException. "x must be in range 0-7 inclusive")))
 
-  (if (or (> y 7) (< y 0))
+  (when (or (> y 7) (< y 0))
     (throw (IllegalArgumentException. "y must be in range 0-7 inclusive"))))
 
 (defn- validate-rgb-component [component]
-  (if (or (> component 63) (< component 0))
+  (when (or (> component 63) (< component 0))
     (throw (IllegalArgumentException. "RGB components must be in range 0-63 inclusive"))))
 
 (defn- validate-rgb [red green blue]
@@ -18,7 +18,7 @@
   (validate-rgb-component blue))
 
 (defn- validate-color [color]
-  (if (or (> color 127) (< color 0))
+  (when (or (> color 127) (< color 0))
     (throw (IllegalArgumentException. "color must be in range 0-127 inclusive"))))
 
 (defn- coordinate-pair-to-index [x y] (+ (+ x 1) (* 10 (+ y 1))))
@@ -215,7 +215,7 @@
   (validate-color color-description)
   (midi/send-midi lpad midi/CHANNEL_3_NOTE_ON (coordinate-pair-to-index x y) color-description))
 
-(defn clear-grid [lpad]
+(defn clear-grid
   "Turn off all the grid buttons.
 
   Examples:
@@ -223,6 +223,7 @@
   (clear-grid lpad)
   ```
   "
+  [lpad]
   (midi/send-midi-sysex lpad midi/SYSEX_LIGHT_GRID_STATUS 0))
 
 (defn open

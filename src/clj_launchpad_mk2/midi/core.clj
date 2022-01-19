@@ -178,7 +178,7 @@
   (let [receiver  (proxy [Receiver] []
                     (close [] nil)
                     (send [msg timestamp]
-                      (if (= (type msg) com.sun.media.sound.FastShortMessage)
+                      (when (= (type msg) com.sun.media.sound.FastShortMessage)
                         (handler-fn (decode-message msg)))))]
     (.setReceiver in receiver)))
 
