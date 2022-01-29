@@ -5,13 +5,10 @@
             [clj-launchpad-mk2.core :refer [open clear-grid scroll-text-once]]))
 
 (defn show-time [lpad]
-  (let [time (trim (:out (sh "date" "+%I:%M")))
-        _ (println time)
-        _ (println lpad)]
+  (let [time (trim (:out (sh "date" "+%I:%M")))]
     (doto lpad
       (clear-grid)
       (scroll-text-once time 54))))
 
 (defn run [opts]
-  (println "Hi")
   (show-time (open)))
