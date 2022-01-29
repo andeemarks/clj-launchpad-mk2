@@ -35,22 +35,22 @@
 
 (defn record [lpad id solution]
   (case id
-    1 (show-1 lpad {:solving true})
-    2 (show-2 lpad {:solving true})
-    3 (show-3 lpad {:solving true})
-    4 (show-4 lpad {:solving true}))
+    0 (show-1 lpad {:solving true})
+    1 (show-2 lpad {:solving true})
+    2 (show-3 lpad {:solving true})
+    3 (show-4 lpad {:solving true}))
   (swap! solution conj (dec id)))
 
-(defn show-border [lpad colour]
+(defn show-border [lpad]
   (doseq [x (range 2 6)]
-    (rgb lpad x 2 colour colour colour)
-    (rgb lpad x 5 colour colour colour))
+    (lp/light-cell lpad x 2 lp/WHITE)
+    (lp/light-cell lpad x 5 lp/WHITE))
 
   (doseq [y (range 3 5)]
-    (rgb lpad 2 y colour colour colour)
-    (rgb lpad 2 y colour colour colour)
-    (rgb lpad 5 y colour colour colour)
-    (rgb lpad 5 y colour colour colour)))
+    (lp/light-cell lpad 2 y lp/WHITE)
+    (lp/light-cell lpad 2 y lp/WHITE)
+    (lp/light-cell lpad 5 y lp/WHITE)
+    (lp/light-cell lpad 5 y lp/WHITE)))
 
 (defn build-sequence [length] (repeatedly length #(rand-int 4)))
 
@@ -77,7 +77,7 @@
   (println sequence)
   (lp/clear-grid lpad)
   (show-scores lpad (count sequence) loss-count win-count)
-  (show-border lpad 63)
+  (show-border lpad)
   (doseq [step (range (count sequence))]
     (show lpad (nth sequence step))))
 
@@ -86,22 +86,26 @@
     (let [x (:x msg) y (:y msg)]
       (when (:button-down? msg)
         (cond
-          (and (= x 3) (= y 4)) (record lpad 1 solution)
-          (and (= x 4) (= y 4)) (record lpad 2 solution)
-          (and (= x 3) (= y 3)) (record lpad 3 solution)
-          (and (= x 4) (= y 3)) (record lpad 4 solution)
+          (and (= x 3) (= y 4)) (record lpad 0 solution)
+          (and (= x 4) (= y 4)) (record lpad 1 solution)
+          (and (= x 3) (= y 3)) (record lpad 2 solution)
+          (and (= x 4) (= y 3)) (record lpad 3 solution)
           (:mixer-button? msg) (reset! finished? true))))))
+
+(defn- still-solving? [sequence solution finished?]
+  (and
+   (< (count @solution) (count sequence))
+   (not @finished?)
+   (not (= sequence @solution))))
 
 (defn solve-round [lpad sequence]
   (let [solution (atom [])
         finished? (atom false)]
     (midi/set-button-press-handler lpad (handle-button-press lpad solution false))
 
-    (while (and
-            (< (count @solution) (count sequence))
-            (not @finished?)
-            (not (= sequence @solution)))
+    (while (still-solving? sequence solution finished?)
       (Thread/sleep 100))
+
     (midi/remove-button-press-handler lpad)
     (cond
       @finished? :user-quit
@@ -116,13 +120,10 @@
         loss-count (atom 0)
         sequence (build-sequence 8)]
     (midi/remove-button-press-handler lpad)
-    (doseq [round (range (count sequence))]
-      (show-round lpad (take (inc round) sequence) win-count loss-count)
-      (case (solve-round lpad (take (inc round) sequence))
+    (doseq [round (range 1 (inc (count sequence)))]
+      (show-round lpad (take round sequence) win-count loss-count)
+      (case (solve-round lpad (take round sequence))
         :user-quit (lp/scroll-text-once lpad "Bye" 54)
         :solution-passed (swap! win-count inc)
         :solution-failed (swap! loss-count inc)))
     (show-scores lpad 8 loss-count win-count)))
-
-
-
