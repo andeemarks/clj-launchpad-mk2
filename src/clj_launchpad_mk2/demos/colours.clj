@@ -9,7 +9,6 @@
 (defn- show-colours [lpad base]
   (doseq [y (range 8)
           x (range 8)]
-    ;; (println (str "x: " x " y: " y " colour: " (coord-to-colour x y)))
     (light-cell lpad x y (coord-to-colour x y))))
 
 (defn- handle-button-press [lpad]
