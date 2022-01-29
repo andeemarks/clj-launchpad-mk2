@@ -118,10 +118,15 @@
         loss-count (atom 0)
         sequence (build-sequence 8)]
     (midi/remove-button-press-handler lpad)
-    (doseq [round (range 1 (inc (count sequence)))]
-      (show-round lpad (take round sequence) win-count loss-count)
-      (case (solve-round lpad (take round sequence))
-        :user-quit (lp/scroll-text-once lpad "Bye" 54)
-        :solution-passed (swap! win-count inc)
-        :solution-failed (swap! loss-count inc))
-      (show-scores lpad round loss-count win-count))))
+    (try
+      (doseq [round (range 1 (inc (count sequence)))]
+        (show-round lpad (take round sequence) win-count loss-count)
+        (case (solve-round lpad (take round sequence))
+          :user-quit (throw (Exception. "user quit game"))
+          :solution-passed (swap! win-count inc)
+          :solution-failed (swap! loss-count inc))
+        (show-scores lpad round loss-count win-count))
+      (catch Exception e
+        (lp/scroll-text-once lpad "Bye" 54))
+      (finally
+        (midi/remove-button-press-handler lpad)))))
