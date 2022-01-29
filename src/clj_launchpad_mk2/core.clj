@@ -1,9 +1,15 @@
 (ns clj-launchpad-mk2.core
   (:require [clj-launchpad-mk2.midi.core :as midi]))
 
+(def ^:const ^:no-doc RED 5)
+(def ^:const ^:no-doc BLUE 45)
+(def ^:const ^:no-doc GREEN 21)
+(def ^:const ^:no-doc WHITE 3)
+(def ^:const ^:no-doc YELLOW 13)
+
 (defn- validate-coordinates [x y]
-  (when (or (> x 7) (< x 0))
-    (throw (IllegalArgumentException. "x must be in range 0-7 inclusive")))
+  (when (or (> x 8) (< x 0))
+    (throw (IllegalArgumentException. "x must be in range 0-8 inclusive")))
 
   (when (or (> y 7) (< y 0))
     (throw (IllegalArgumentException. "y must be in range 0-7 inclusive"))))
