@@ -3,26 +3,36 @@
   (:require [clj-launchpad-mk2.core :as lp]
             [clj-launchpad-mk2.midi.core :as midi]))
 
-(defn reset [lpad x y & solving?]
-  (Thread/sleep 500)
+(defn reset [lpad coords & solving?]
+  (Thread/sleep 300)
 
-  (lp/clear-cell lpad x y))
+  (doseq [coord coords]
+    (lp/clear-cell lpad (first coord) (second coord))))
+
+(defn- light-square [lpad coords colour]
+  (doseq [coord coords]
+    (lp/light-cell lpad (first coord) (second coord) colour) coords))
+
+(def hotspots {:1 '((0 3) (1 3) (0 2) (1 2))
+               :2 '((2 3) (3 3) (2 2) (3 2))
+               :3 '((0 0) (0 1) (1 1) (1 0))
+               :4 '((2 1) (3 1) (2 0) (3 0))})
 
 (defn show-1 [lpad & options]
-  (lp/light-cell lpad 3 4 lp/GREEN)
-  (reset lpad 3 4 options))
+  (light-square lpad (:1 hotspots) lp/GREEN)
+  (reset lpad (:1 hotspots) options))
 
 (defn show-2 [lpad & options]
-  (lp/light-cell lpad 4 4 lp/RED)
-  (reset lpad 4 4 options))
+  (light-square lpad (:2 hotspots) lp/RED)
+  (reset lpad (:2 hotspots) options))
 
 (defn show-3 [lpad & options]
-  (lp/light-cell lpad 3 3 lp/YELLOW)
-  (reset lpad 3 3 options))
+  (light-square lpad (:3 hotspots) lp/YELLOW)
+  (reset lpad (:3 hotspots) options))
 
 (defn show-4 [lpad & options]
-  (lp/light-cell lpad 4 3 lp/BLUE)
-  (reset lpad 4 3 options))
+  (light-square lpad (:4 hotspots) lp/BLUE)
+  (reset lpad (:4 hotspots) options))
 
 (defn show [lpad id]
   (case id
@@ -40,15 +50,11 @@
   (swap! solution conj id))
 
 (defn show-border [lpad]
-  (doseq [x (range 2 6)]
-    (lp/light-cell lpad x 2 lp/WHITE)
-    (lp/light-cell lpad x 5 lp/WHITE))
+  (doseq [x (range 0 5)]
+    (lp/light-cell lpad x 4 lp/WHITE))
 
-  (doseq [y (range 3 5)]
-    (lp/light-cell lpad 2 y lp/WHITE)
-    (lp/light-cell lpad 2 y lp/WHITE)
-    (lp/light-cell lpad 5 y lp/WHITE)
-    (lp/light-cell lpad 5 y lp/WHITE)))
+  (doseq [y (range 0 4)]
+    (lp/light-cell lpad 4 y lp/WHITE)))
 
 (defn build-sequence [length] (repeatedly length #(rand-int 4)))
 
@@ -81,13 +87,14 @@
 
 (defn- handle-button-press [lpad solution finished?]
   (fn [msg]
-    (let [x (:x msg) y (:y msg)]
+    (let [x (:x msg) y (:y msg)
+          coord (conj nil x y)]
       (when (:button-down? msg)
         (cond
-          (and (= x 3) (= y 4)) (record lpad 0 solution)
-          (and (= x 4) (= y 4)) (record lpad 1 solution)
-          (and (= x 3) (= y 3)) (record lpad 2 solution)
-          (and (= x 4) (= y 3)) (record lpad 3 solution)
+          (some #(= % coord) (:4 hotspots)) (record lpad 0 solution)
+          (some #(= % coord) (:2 hotspots)) (record lpad 1 solution)
+          (some #(= % coord) (:3 hotspots)) (record lpad 2 solution)
+          (some #(= % coord) (:1 hotspots)) (record lpad 3 solution)
           (:mixer-button? msg) (reset! finished? true))))))
 
 (defn- still-solving? [sequence solution finished?]
