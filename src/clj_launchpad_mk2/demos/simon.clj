@@ -4,27 +4,25 @@
             [clj-launchpad-mk2.midi.core :as midi]))
 
 (defn reset [lpad x y & solving?]
-  (if solving?
-    (Thread/sleep 100)
-    (Thread/sleep 1000))
+  (Thread/sleep 500)
 
   (lp/clear-cell lpad x y))
 
 (defn show-1 [lpad & options]
   (lp/light-cell lpad 3 4 lp/GREEN)
-  (reset lpad 3 4 (:solving options)))
+  (reset lpad 3 4 options))
 
 (defn show-2 [lpad & options]
   (lp/light-cell lpad 4 4 lp/RED)
-  (reset lpad 4 4 (:solving options)))
+  (reset lpad 4 4 options))
 
 (defn show-3 [lpad & options]
   (lp/light-cell lpad 3 3 lp/YELLOW)
-  (reset lpad 3 3 (:solving options)))
+  (reset lpad 3 3 options))
 
 (defn show-4 [lpad & options]
   (lp/light-cell lpad 4 3 lp/BLUE)
-  (reset lpad 4 3 (:solving options)))
+  (reset lpad 4 3 options))
 
 (defn show [lpad id]
   (case id
@@ -39,7 +37,7 @@
     1 (show-2 lpad {:solving true})
     2 (show-3 lpad {:solving true})
     3 (show-4 lpad {:solving true}))
-  (swap! solution conj (dec id)))
+  (swap! solution conj id))
 
 (defn show-border [lpad]
   (doseq [x (range 2 6)]
@@ -101,7 +99,7 @@
 (defn solve-round [lpad sequence]
   (let [solution (atom [])
         finished? (atom false)]
-    (midi/set-button-press-handler lpad (handle-button-press lpad solution false))
+    (midi/set-button-press-handler lpad (handle-button-press lpad solution finished?))
 
     (while (still-solving? sequence solution finished?)
       (Thread/sleep 100))
@@ -125,5 +123,5 @@
       (case (solve-round lpad (take round sequence))
         :user-quit (lp/scroll-text-once lpad "Bye" 54)
         :solution-passed (swap! win-count inc)
-        :solution-failed (swap! loss-count inc)))
-    (show-scores lpad 8 loss-count win-count)))
+        :solution-failed (swap! loss-count inc))
+      (show-scores lpad round loss-count win-count))))
