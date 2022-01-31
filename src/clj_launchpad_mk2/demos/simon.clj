@@ -3,7 +3,7 @@
   (:require [clj-launchpad-mk2.core :as lp]
             [clj-launchpad-mk2.midi.core :as midi]))
 
-(defn reset [lpad coords & solving?]
+(defn reset [lpad coords]
   (Thread/sleep 300)
 
   (doseq [coord coords]
@@ -13,40 +13,18 @@
   (doseq [coord coords]
     (lp/light-cell lpad (first coord) (second coord) colour) coords))
 
-(def hotspots {:1 {:coords '((0 3) (1 3) (0 2) (1 2)) :colour lp/GREEN}
-               :2 {:coords '((2 3) (3 3) (2 2) (3 2)) :colour lp/RED}
-               :3 {:coords '((0 0) (0 1) (1 1) (1 0)) :colour lp/YELLOW}
-               :4 {:coords '((2 1) (3 1) (2 0) (3 0)) :colour lp/BLUE}})
-
-(defn show-1 [lpad & options]
-  (light-square lpad (:coords (:1 hotspots)) (:colour (:1 hotspots)))
-  (reset lpad (:coords (:1 hotspots)) options))
-
-(defn show-2 [lpad & options]
-  (light-square lpad (:coords (:2 hotspots)) (:colour (:2 hotspots)))
-  (reset lpad (:coords (:2 hotspots)) options))
-
-(defn show-3 [lpad & options]
-  (light-square lpad (:coords (:3 hotspots)) (:colour (:3 hotspots)))
-  (reset lpad (:coords (:3 hotspots)) options))
-
-(defn show-4 [lpad & options]
-  (light-square lpad (:coords (:4 hotspots)) (:colour (:4 hotspots)))
-  (reset lpad (:coords (:4 hotspots)) options))
+(def hotspots {:0 {:coords '((0 3) (1 3) (0 2) (1 2)) :colour lp/GREEN}
+               :1 {:coords '((2 3) (3 3) (2 2) (3 2)) :colour lp/RED}
+               :2 {:coords '((0 0) (0 1) (1 1) (1 0)) :colour lp/YELLOW}
+               :3 {:coords '((2 1) (3 1) (2 0) (3 0)) :colour lp/BLUE}})
 
 (defn show [lpad id]
-  (case id
-    0 (show-1 lpad)
-    1 (show-2 lpad)
-    2 (show-3 lpad)
-    3 (show-4 lpad)))
+  (let [hotspots (get hotspots (keyword (str id)))]
+    (light-square lpad (:coords hotspots) (:colour hotspots))
+    (reset lpad (:coords hotspots))))
 
 (defn record [lpad id solution]
-  (case id
-    0 (show-1 lpad {:solving true})
-    1 (show-2 lpad {:solving true})
-    2 (show-3 lpad {:solving true})
-    3 (show-4 lpad {:solving true}))
+  (show lpad id)
   (swap! solution conj id))
 
 (defn show-border [lpad]
@@ -85,16 +63,20 @@
   (doseq [step (range (count sequence))]
     (show lpad (nth sequence step))))
 
+(defn in-hotspot? [hotspot-id coord]
+  (some #(= % coord) (:coords (get hotspots (keyword (str hotspot-id))))))
+
 (defn- handle-button-press [lpad solution finished?]
   (fn [msg]
     (let [x (:x msg) y (:y msg)
-          coord (conj nil x y)]
+          coord (conj nil y x)
+          _ (println coord)]
       (when (:button-down? msg)
         (cond
-          (some #(= % coord) (:coords (:4 hotspots))) (record lpad 0 solution)
-          (some #(= % coord) (:coords (:2 hotspots))) (record lpad 1 solution)
-          (some #(= % coord) (:coords (:3 hotspots))) (record lpad 2 solution)
-          (some #(= % coord) (:coords (:1 hotspots))) (record lpad 3 solution)
+          (in-hotspot? 3 coord) (record lpad 3 solution)
+          (in-hotspot? 1 coord) (record lpad 1 solution)
+          (in-hotspot? 2 coord) (record lpad 2 solution)
+          (in-hotspot? 0 coord) (record lpad 0 solution)
           (:mixer-button? msg) (reset! finished? true))))))
 
 (defn- still-solving? [sequence solution finished?]
@@ -129,9 +111,11 @@
       (doseq [round (range 1 (inc (count sequence)))]
         (show-round lpad (take round sequence) win-count loss-count)
         (case (solve-round lpad (take round sequence))
-          :user-quit (lp/scroll-text-once lpad "Bye" 54)
+          :user-quit (throw (IllegalStateException. "user quit"))
           :solution-passed (swap! win-count inc)
           :solution-failed (swap! loss-count inc))
         (show-scores lpad round loss-count win-count))
+      (catch IllegalStateException e
+        (lp/scroll-text-once lpad "Bye" 54))
       (finally
         (midi/remove-button-press-handler lpad)))))
