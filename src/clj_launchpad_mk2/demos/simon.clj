@@ -5,13 +5,12 @@
 
 (defn reset [lpad coords]
   (Thread/sleep 300)
-
   (doseq [coord coords]
     (lp/clear-cell lpad (first coord) (second coord))))
 
 (defn- light-square [lpad coords colour]
   (doseq [coord coords]
-    (lp/light-cell lpad (first coord) (second coord) colour) coords))
+    (lp/light-cell lpad (first coord) (second coord) colour)))
 
 (def hotspots {:0 {:coords '((0 3) (1 3) (0 2) (1 2)) :colour lp/GREEN}
                :1 {:coords '((2 3) (3 3) (2 2) (3 2)) :colour lp/RED}
@@ -61,23 +60,24 @@
   (show-scores lpad (count sequence) loss-count win-count)
   (show-border lpad)
   (doseq [step (range (count sequence))]
-    (show lpad (nth sequence step))))
+    (show lpad (nth sequence step))
+    (Thread/sleep 300)))
 
 (defn in-hotspot? [hotspot-id coord]
   (some #(= % coord) (:coords (get hotspots (keyword (str hotspot-id))))))
 
+(defn user-quit? [msg] (:mixer-button? msg))
+
 (defn- handle-button-press [lpad solution finished?]
   (fn [msg]
-    (let [x (:x msg) y (:y msg)
-          coord (conj nil y x)
-          _ (println coord)]
+    (let [coord (conj nil (:y msg) (:x msg))]
       (when (:button-down? msg)
         (cond
           (in-hotspot? 3 coord) (record lpad 3 solution)
           (in-hotspot? 1 coord) (record lpad 1 solution)
           (in-hotspot? 2 coord) (record lpad 2 solution)
           (in-hotspot? 0 coord) (record lpad 0 solution)
-          (:mixer-button? msg) (reset! finished? true))))))
+          (user-quit? msg) (reset! finished? true))))))
 
 (defn- still-solving? [sequence solution finished?]
   (and
@@ -109,12 +109,13 @@
     (midi/remove-button-press-handler lpad)
     (try
       (doseq [round (range 1 (inc (count sequence)))]
-        (show-round lpad (take round sequence) win-count loss-count)
-        (case (solve-round lpad (take round sequence))
-          :user-quit (throw (IllegalStateException. "user quit"))
-          :solution-passed (swap! win-count inc)
-          :solution-failed (swap! loss-count inc))
-        (show-scores lpad round loss-count win-count))
+        (let [fragment (take round sequence)]
+          (show-round lpad fragment win-count loss-count)
+          (case (solve-round lpad fragment)
+            :user-quit (throw (IllegalStateException. "user quit"))
+            :solution-passed (swap! win-count inc)
+            :solution-failed (swap! loss-count inc))
+          (show-scores lpad round loss-count win-count)))
       (catch IllegalStateException e
         (lp/scroll-text-once lpad "Bye" 54))
       (finally
