@@ -35,23 +35,20 @@
 
 (defn build-sequence [length] (repeatedly length #(rand-int 4)))
 
-(defn show-win [lpad win-count]
-  (doseq [win (range win-count)]
-    (lp/light-cell lpad win 7 lp/GREEN)))
-
-(defn show-loss [lpad loss-count]
-  (doseq [win (range loss-count)]
-    (lp/light-cell lpad win 6 lp/RED)))
-
 (defn show-round-counter [lpad round-counter]
   (doseq [step (range round-counter)]
     (lp/light-cell lpad 8 step lp/YELLOW))
   (lp/pulse lpad 8 (dec round-counter) lp/YELLOW))
 
+(defn show-results [lpad result-tally]
+  (doseq [result (range (count @result-tally))]
+    (if (= :w (nth @result-tally result))
+      (lp/light-cell lpad result 7 lp/GREEN)
+      (lp/light-cell lpad result 7 lp/RED))))
+
 (defn show-scores [lpad round-counter result-tally]
   (doto lpad
-    (show-win (count (filter #(= % :w) @result-tally)))
-    (show-loss (count (filter #(= % :l) @result-tally)))
+    (show-results result-tally)
     (show-round-counter round-counter)))
 
 (defn show-round [lpad sequence result-tally]
@@ -103,7 +100,7 @@
       :else :unknown)))
 
 (defn game [lpad sequence]
-  (let [result-tally (atom '())]
+  (let [result-tally (atom [])]
     (doseq [round (range 1 (inc (count sequence)))]
       (let [fragment (take round sequence)]
         (show-round lpad fragment result-tally)
