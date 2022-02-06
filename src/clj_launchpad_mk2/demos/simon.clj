@@ -102,15 +102,19 @@
       (>= (count @solution) (count sequence)) :solution-failed
       :else :unknown)))
 
+(defn- handle-user-quit [] (throw (IllegalStateException. "user quit")))
+(defn- handle-correct-solution [lpad result-tally] (swap! result-tally conj :w))
+(defn- handle-incorrect-solution [lpad result-tally] (swap! result-tally conj :l))
+
 (defn game [lpad sequence]
   (let [result-tally (atom [])]
     (doseq [round (range 1 (inc (count sequence)))]
       (let [fragment (take round sequence)]
         (show-round lpad fragment result-tally)
         (case (solve-round lpad fragment)
-          :user-quit (throw (IllegalStateException. "user quit"))
-          :solution-passed (swap! result-tally conj :w)
-          :solution-failed (swap! result-tally conj :l)
+          :user-quit (handle-user-quit)
+          :solution-passed (handle-correct-solution lpad result-tally)
+          :solution-failed (handle-incorrect-solution lpad result-tally)
           (show-scores lpad round result-tally))))))
 
 #_{:clj-kondo/ignore [:unused-binding]}
