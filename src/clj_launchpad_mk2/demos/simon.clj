@@ -36,11 +36,11 @@
 (defn build-sequence [length] (repeatedly length #(rand-int 4)))
 
 (defn show-win [lpad win-count]
-  (doseq [win (range @win-count)]
+  (doseq [win (range win-count)]
     (lp/light-cell lpad win 7 lp/GREEN)))
 
 (defn show-loss [lpad loss-count]
-  (doseq [win (range @loss-count)]
+  (doseq [win (range loss-count)]
     (lp/light-cell lpad win 6 lp/RED)))
 
 (defn show-round-counter [lpad round-counter]
@@ -48,17 +48,19 @@
     (lp/light-cell lpad 8 step lp/YELLOW))
   (lp/pulse lpad 8 (dec round-counter) lp/YELLOW))
 
-(defn show-scores [lpad round-counter loss-count win-count]
+(defn show-scores [lpad round-counter result-tally]
   (doto lpad
-    (show-win win-count)
-    (show-loss loss-count)
+    (show-win (count (filter #(= % :w) @result-tally)))
+    (show-loss (count (filter #(= % :l) @result-tally)))
     (show-round-counter round-counter)))
 
-(defn show-round [lpad sequence win-count loss-count]
+(defn show-round [lpad sequence result-tally]
   (println sequence)
-  (lp/clear-grid lpad)
-  (show-scores lpad (count sequence) loss-count win-count)
-  (show-border lpad)
+  (doto lpad
+    (lp/clear-grid)
+    (show-scores (count sequence) result-tally)
+    (show-border))
+
   (doseq [step (range (count sequence))]
     (show lpad (nth sequence step))
     (Thread/sleep 300)))
@@ -100,23 +102,27 @@
       (>= (count @solution) (count sequence)) :solution-failed
       :else :unknown)))
 
+(defn game [lpad sequence]
+  (let [result-tally (atom '())]
+    (doseq [round (range 1 (inc (count sequence)))]
+      (let [fragment (take round sequence)]
+        (show-round lpad fragment result-tally)
+        (case (solve-round lpad fragment)
+          :user-quit (throw (IllegalStateException. "user quit"))
+          :solution-passed (swap! result-tally conj :w)
+          :solution-failed (swap! result-tally conj :l)
+          (show-scores lpad round result-tally))))))
+
 #_{:clj-kondo/ignore [:unused-binding]}
 (defn run [opts]
   (let [lpad (lp/open)
-        win-count (atom 0)
-        loss-count (atom 0)
         sequence (build-sequence 8)]
     (midi/remove-button-press-handler lpad)
     (try
-      (doseq [round (range 1 (inc (count sequence)))]
-        (let [fragment (take round sequence)]
-          (show-round lpad fragment win-count loss-count)
-          (case (solve-round lpad fragment)
-            :user-quit (throw (IllegalStateException. "user quit"))
-            :solution-passed (swap! win-count inc)
-            :solution-failed (swap! loss-count inc))
-          (show-scores lpad round loss-count win-count)))
+      (game lpad sequence)
       (catch IllegalStateException e
-        (lp/scroll-text-once lpad "Bye" 54))
+        (doto lpad
+          (lp/scroll-text-once "Bye" 54)
+          (lp/clear-grid)))
       (finally
         (midi/remove-button-press-handler lpad)))))
