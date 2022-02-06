@@ -103,8 +103,23 @@
       :else :unknown)))
 
 (defn- handle-user-quit [] (throw (IllegalStateException. "user quit")))
+
 (defn- handle-correct-solution [lpad result-tally] (swap! result-tally conj :w))
-(defn- handle-incorrect-solution [lpad result-tally] (swap! result-tally conj :l))
+
+(defn- handle-incorrect-solution [lpad result-tally]
+  (doto lpad
+    (lp/light-cell 3 0 lp/RED)
+    (lp/light-cell 2 1 lp/RED)
+    (lp/light-cell 1 2 lp/RED)
+    (lp/light-cell 0 3 lp/RED)
+    (lp/light-cell 3 3 lp/RED)
+    (lp/light-cell 2 2 lp/RED)
+    (lp/light-cell 1 1 lp/RED)
+    (lp/light-cell 0 0 lp/RED))
+
+  (Thread/sleep 200)
+
+  (swap! result-tally conj :l))
 
 (defn game [lpad sequence]
   (let [result-tally (atom [])]
