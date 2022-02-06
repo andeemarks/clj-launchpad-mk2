@@ -41,6 +41,9 @@
   (lp/pulse lpad 8 (dec round-counter) lp/YELLOW))
 
 (defn show-results [lpad result-tally]
+  (doseq [result (range 8)]
+    (lp/pulse lpad result 7 lp/YELLOW))
+
   (doseq [result (range (count @result-tally))]
     (if (= :w (nth @result-tally result))
       (lp/light-cell lpad result 7 lp/GREEN)
